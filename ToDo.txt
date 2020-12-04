@@ -1,0 +1,20 @@
+Features
+
+Non branching story (first priority)
+
+Landscape Portrait Detection and scene switching
+Themeing entire game with single theme file
+Story Manager with globally callable Next to advance
+Custom Transitions for Scenes, Characters, Dialogs
+Save and Load (Auto save progress)
+Characters with simple animation using dragon bones or such which is easy to apply to new character
+Characters with composition for dress accessories & facial expressions
+Ability to add small particle effects & animations on background scene (lights, fire etc)
+
+
+Interactive branching extension
+
+Tracking global variables
+Choices display based on variables (enable or disable charm, intimidate etc based choices)
+
+

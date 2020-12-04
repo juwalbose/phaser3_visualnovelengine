@@ -1,0 +1,9 @@
+{
+  "ui_theme": {
+    "image":"general.png","atlas":"general.json"
+  },
+  "font":"fontname.ttf",
+  "story":{
+    "default_language":"en","file_name":"story"
+  }
+}
