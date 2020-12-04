@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import ViewManager from '../components/ViewManager';
 
 export default class Preloader extends Phaser.Scene
 {
@@ -250,7 +251,8 @@ export default class Preloader extends Phaser.Scene
 */
 
 	complete() {
+        let vm = new ViewManager(1920,1080);
         console.log("Load Complete!");
-        this.scene.start("Menu");
+        this.scene.start("Menu",{ viewManager:vm });
 	}
 }
