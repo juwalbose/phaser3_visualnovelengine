@@ -1,5 +1,7 @@
 import Phaser from "phaser";
 import dragonBones from "./lib/dragonBones";
+import NinePatchPlugin from 'phaser3-rex-plugins/plugins/ninepatch-plugin.js';
+
 
 import Preloader from './scenes/Preloader'
 import Menu from './scenes/Menu'
@@ -39,6 +41,11 @@ const config = {
 	backgroundColor:'#cccccc',
 	parent:'index',
 	plugins: {
+		global: [{
+            key: 'rexNinePatchPlugin',
+            plugin: NinePatchPlugin,
+            start: true
+        }],
         scene: [
             { key: "DragonBones", plugin: dragonBones.phaser.plugin.DragonBonesScenePlugin, mapping: "dragonbone" }    // setup DB scene plugin
         ]
