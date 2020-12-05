@@ -6,7 +6,7 @@ import BBCodeTextPlugin from 'phaser3-rex-plugins/plugins/bbcodetext-plugin.js';
 
 
 import Preloader from './scenes/Preloader'
-import Menu from './scenes/Menu'
+import Menu from './scenes/Test'
 import Load from './scenes/Load'
 import Save from './scenes/Save'
 import GameOver from './scenes/GameOver'
@@ -42,6 +42,9 @@ const config = {
         scene: [
             { key: "DragonBones", plugin: dragonBones.phaser.plugin.DragonBonesScenePlugin, mapping: "dragonbone" }    // setup DB scene plugin
         ]
+	},
+	input: {
+        activePointers: 1
     },
 	scene: [Preloader,Menu,Load,Save,GameOver,GameWon,Novel],
 	scale: {

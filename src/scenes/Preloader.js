@@ -253,6 +253,6 @@ export default class Preloader extends Phaser.Scene
 	complete() {
         let vm = new ViewManager(1920,1080,50,50);
         console.log("Load Complete!");
-        this.scene.start("Menu",{ viewManager:vm });
+        this.scene.start("Test",{ viewManager:vm });
 	}
 }
