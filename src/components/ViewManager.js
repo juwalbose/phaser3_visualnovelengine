@@ -46,12 +46,20 @@ export default class ViewManager
         for (let index = 0; index < this.heightBasedDisplayList.length; index++) {
             const element = this.heightBasedDisplayList[index];
             let ratio=element.heightRatio*(newHeight/this.designHeight);
-            if(element.isNinePatch){
-                //console.log(element.originalWidth*ratio,availableWidth);
-                if(element.originalWidth*ratio>availableWidth){
-                    ratio=availableWidth/element.originalWidth;
+            if(element.adjustWithHeightAndWidth){
+                if(element.isNinePatch){
+                    if(element.originalWidth*ratio>availableWidth){
+                        ratio=availableWidth/element.originalWidth;
+                    }
+                    element.item.resize(element.originalWidth*ratio, element.originalHeight*ratio);
+                }else if(element.isText){
+                    if(element.originalWidth*ratio>availableWidth){
+                        ratio=availableWidth/element.originalWidth;
+                    }
+                    element.item.setScale(ratio);
+                    //txt.setWrapWidth(width);
                 }
-                element.item.resize(element.originalWidth*ratio, element.originalHeight*ratio);
+
             }else{
                 element.item.setScale(ratio);
             }

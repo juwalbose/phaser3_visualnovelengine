@@ -8,13 +8,15 @@ export default class DynamicScalePosItem
      * @param {*} heightRatio height of item as a ratio of design height (1080)
      * @param {*} isNinePatch
      */
-    constructor(item,posX=0,posY=0,heightRatio=0,isNinePatch=false)
+    constructor(item,posX=0,posY=0,heightRatio=0,adjustWithHeightAndWidth=false,isNinePatch=false,isText=false)
 	{
         this.item=item;
         this.x=posX;
         this.y=posY
         this.heightRatio=heightRatio;
         this.isNinePatch=isNinePatch;
+        this.adjustWithHeightAndWidth=adjustWithHeightAndWidth;
+        this.isText=isText;
         this.originalWidth=item.width;
         this.originalHeight=item.height;
     }
