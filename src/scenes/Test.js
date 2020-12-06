@@ -14,6 +14,9 @@ export default class Test extends Phaser.Scene
         if(data.viewManager!=undefined){
             this.viewManager=data.viewManager;
         }
+        if(data.storyManager!=undefined){
+          this.storyManager=data.storyManager;
+      }
     }
 }
 
@@ -95,6 +98,8 @@ export default class Test extends Phaser.Scene
     //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-overview/ //various UI 
     //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/restorabledata/ //key value data store
     //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/xor/ //xor string encryption
+    //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-dialog/ //ui dialog box with choice buttons
+    //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-sizer/ //sizer for layout
 
     this.scale.on('resize',this.resizeResponder,this);
     this.scale.on('orientationchange', this.orientationResponder,this);

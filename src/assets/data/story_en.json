@@ -1,0 +1,61 @@
+{
+    "locations": [
+        {"name":"Lucy's Apartment","aka":"la","image":"lucy_apartment_bg.jpg"},
+        {"name":"Sam's Home","aka":"sh","image":"sam_home_bg.jpg"},
+        {"name":"Supermarket","aka":"sm","image":"supermarket_bg.jpg"},
+        {"name":"School","aka":"sc","image":"school_bg.jpg"}
+    ],
+    "characters":[
+        {"name":"Dragon","aka":"d","texture":"src/assets/Dragon_tex.png","textureData":"src/assets/Dragon_tex.json","skeletonData":"src/assets/Dragon_ske.json"},
+        {"name":"Lucy","aka":"l","texture":"src/assets/Lucy_tex.png","textureData":"src/assets/Lucy_tex.json","skeletonData":"src/assets/Lucy_ske.json"},
+        {"name":"Sam","aka":"s","texture":"src/assets/Sam_tex.png","textureData":"src/assets/Sam_tex.json","skeletonData":"src/assets/Sam_ske.json"}
+    ],
+    "characterExpressionTags":[
+        {"name":"neutral","aka":"n"},
+        {"name":"happy","aka":"h"},
+        {"name":"sad","aka":"s"},
+        {"name":"angry","aka":"a"},
+        {"name":"wow","aka":"w"}
+    ],
+    "gameVariables":{
+        "skipVariableCheck":false,
+        "obtainedKey":false,
+        "charm":0,
+        "name":"James"
+    },
+    "storyFlow":[
+        {"Prologue":[
+            "|LOCATION|sm",
+            "The supermarket is crowded today. Holiday season is on and everyone is busy buying their presents.",
+            "l_s:I hate shopping alone. If only Lannie had not ditched me at the last minute...",
+            "Lucy sees a familiar face among the bustling crowd. Its Sam!",
+            "|CHOICE|Wave to Sam:|LABEL1|:Try to avoid Sam:|LABEL2|",
+            "|LABEL2|Lucy tries to ignore Sam but Sam sees her and runs to her.",
+            "|GOTO|:|LABEL3|",
+            "|LABEL1|Lucy waves to Sam",
+            "|LABEL3|s_w:Is this really you Lucy? What are the odds...",
+            "l_h:WOW! Sam, how have you been... how long has it been? 5 years?",
+            "s_h:7 actually. You have not changed a bit. So, is the shopping over?",
+            "l_s:Well, my friend ditched me and I was wondering whom to partner up for my shopping...",
+            "s_h:Lead the way my lady...",
+            "Lucy & Sam had so many stories to share. They did more talking than shopping. Hours passed!",
+            "s_n:Let me drop you at your apartment. I hope you are still living at the same place?",
+            "l_n:You got me. I would love you to meet Lannie.",
+            "|IF|$skipVariableCheck*==*true:|LABEL4|",
+            "Let us check variable updation logic...",
+            "|CHOICE|Obtain Key:|$obtainedKey*=*true|:Increase Charm:|$charm*+*1|",
+            "Just displaying a variable $name here",
+            "|$charm*+*1|",
+            "|LABEL4|They got into Sam's car and made their way to Lucy's apartment."
+        ]},
+        {"Chapter 1":[
+
+        ]},
+        {"Chapter 2":[
+
+        ]},
+        {"Epilogue":[
+
+        ]}
+    ]
+  }

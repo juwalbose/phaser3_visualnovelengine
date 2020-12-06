@@ -1,4 +1,4 @@
-import DynamicScalePosItem from "./DynamicScalePosItem";
+import DynamicScalePosItem from "../components/DynamicScalePosItem";
 
 export default class ViewManager 
 {

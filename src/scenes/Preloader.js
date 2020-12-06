@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
-import ViewManager from '../components/ViewManager';
+import ViewManager from '../utils/ViewManager';
+import StoryManager from '../utils/StoryManager';
 
 export default class Preloader extends Phaser.Scene
 {
@@ -12,7 +13,7 @@ export default class Preloader extends Phaser.Scene
     preload() {
         this.load.json('data', 'src/assets/data/data.json');
         //this.load.once('filecomplete', this.jsonComplete, this);
-        this.load.once('filecomplete', this.complete, this);
+        this.load.once('filecomplete', this.dataComplete, this);
     }
     /*
     jsonComplete(){
@@ -250,9 +251,48 @@ export default class Preloader extends Phaser.Scene
     }
 */
 
-	complete() {
-        let vm = new ViewManager(1920,1080,50,50);
-        console.log("Load Complete!");
-        this.scene.start("Test",{ viewManager:vm });
-	}
+	dataComplete() {
+        console.log("Data json loaded!");
+        let storyFile="story.json";
+        let jsonData=this.cache.json.get('data');
+        if(jsonData===null){
+            console.log("Game Data JSON file missing!");
+            return false;
+        }else{
+            if(jsonData.story===undefined){
+                console.log("Story JSON file missing!");
+            }else{
+                if(jsonData.story.file_name===undefined){
+                    console.log("Story JSON file missing!");
+                }else{
+                    if(jsonData.story.default_language===undefined){
+                        storyFile=jsonData.story.file_name+"_en.json";
+                    }else{
+                        storyFile=jsonData.story.file_name+"_"+jsonData.story.default_language+".json";  
+                    }
+                    this.load.json('story', 'src/assets/data/'+storyFile);
+                    this.load.once('filecomplete', this.storyComplete, this);
+                    return true;
+                }  
+            }
+        }
+        console.log("Cannot proceed without story json file!");
+    }
+    storyComplete(){
+        console.log("Story json loaded!");
+        let jsonData=this.cache.json.get('story');
+        if(jsonData===null){
+            console.log("Story JSON corrupt!");
+            return false;
+        }
+        let sm = new StoryManager(jsonData);
+
+        if(sm.parseAndValidateStory()){
+            let vm = new ViewManager(1920,1080,50,50);
+            console.log("Story data validated!");
+            this.scene.start("Test",{ viewManager:vm,storyManager:sm });
+        }else{
+            console.log("Cannot proceed with corrupt story file!");
+        }
+    }
 }
