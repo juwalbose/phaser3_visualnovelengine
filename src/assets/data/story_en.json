@@ -2,9 +2,7 @@
     "storyName":{"name":"Demo Test","aka":"demoTest"},
     "locations": [
         {"name":"Lucy's Apartment","aka":"la","image":"lucy_apartment_bg.jpg"},
-        {"name":"Sam's Home","aka":"sh","image":"sam_home_bg.jpg"},
-        {"name":"Supermarket","aka":"sm","image":"supermarket_bg.jpg"},
-        {"name":"School","aka":"sc","image":"school_bg.jpg"}
+        {"name":"Supermarket","aka":"sm","image":"supermarket_bg.jpg"}
     ],
     "characters":[
         {"name":"Lannie","aka":"la","texture":"src/assets/Lannie_tex.png","textureData":"src/assets/Lannie_tex.json","skeletonData":"src/assets/Lannie_ske.json"},

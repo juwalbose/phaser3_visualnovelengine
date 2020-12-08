@@ -7,12 +7,14 @@ import XORPlugin from 'phaser3-rex-plugins/plugins/xor-plugin.js';
 
 
 import Preloader from './scenes/Preloader'
-import Menu from './scenes/Test'
+import Menu from './scenes/Menu'
 import Load from './scenes/Load'
 import Save from './scenes/Save'
 import GameOver from './scenes/GameOver'
 import GameWon from './scenes/GameWon'
 import Novel from './scenes/Novel'
+import Test from './scenes/Test'
+import Swap from './scenes/Swap'
 
 
 const config = {
@@ -52,7 +54,7 @@ const config = {
 	input: {
         activePointers: 1
     },
-	scene: [Preloader,Menu,Load,Save,GameOver,GameWon,Novel],
+	scene: [Preloader,Menu,Load,Save,GameOver,GameWon,Novel,Test,Swap],
 	scale: {
 		mode: Phaser.Scale.RESIZE
     },
