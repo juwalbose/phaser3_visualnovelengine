@@ -285,7 +285,7 @@ export default class Preloader extends Phaser.Scene
             console.log("Story JSON corrupt!");
             return false;
         }
-        let sm = new StoryManager(jsonData);
+        let sm = new StoryManager(this, jsonData);
 
         if(sm.parseLoadAndInitStory(false)){//enable disable logging parsing data
             let vm = new ViewManager(1920,1080,50,50);

@@ -1,9 +1,10 @@
 export default class StoryManager 
 {
     
-    constructor(storyData)
+    constructor(scene, storyData)
 	{
         this.storyData=storyData;
+        this.scene=scene;
         this.gameVariables={};
         this.gameCharacters={};
         this.gameCharacterExpressions={};
@@ -29,20 +30,29 @@ export default class StoryManager
         this.storyFlow=this.storyData.storyFlow;
         this.currentChapter=0;
         this.currentSequence=-1;
+        this.currentCharacter=null;
+        this.currentLocation=null;
         this.branchingData={};
         this.gameHasStarted=false;
         this.makingChoice=false;
+        this.needsToLoadLocation=false;
     }
     parseLoadAndInitStory(logging=false){
-        localStorage.clear();//comment off to enable loading from save
+        //localStorage.clear();//comment off to enable loading from save else starts fresh
+        //return;
 
         let parseResult= this.parseAndValidateStory(logging);
-        let file = JSON.parse(localStorage.getItem(this.cfStoryName+'_saveFile'));
+
+        var decResult = this.scene.plugins.get('rexXOR').Decrypt(localStorage.getItem(this.cfStoryName+'_saveFile'), "V!sualF!ct!ons");
+        //console.log(decResult);
+        let file = JSON.parse(decResult);
         if(file){
             console.log("Loaded data :"+file);
             this.updateGameVariables(file);
             this.currentChapter=file.currentChapter;
             this.currentSequence=file.currentSequence-1;
+            this.currentLocation=file.currentLocation;
+            this.needsToLoadLocation=true;
         }else{
             console.log("No save data for "+this.storyName);
         }
@@ -54,7 +64,11 @@ export default class StoryManager
         let file = this.gameVariables;
         file.currentChapter=this.currentChapter;
         file.currentSequence=this.currentSequence;
-        localStorage.setItem(this.cfStoryName+'_saveFile',JSON.stringify(file));
+        file.currentLocation=this.currentLocation;
+
+        var encResult = this.scene.plugins.get('rexXOR').Encrypt(JSON.stringify(file), "V!sualF!ct!ons");
+        //console.log(encResult);
+        localStorage.setItem(this.cfStoryName+'_saveFile',encResult);
 
         // remove an item
         //localStorage.removeItem("item-key");
@@ -62,11 +76,19 @@ export default class StoryManager
         //localStorage.clear();
     }
     nextStep(){
+        if(!this.gameHasStarted)this.gameHasStarted=true;
+        if(this.needsToLoadLocation){
+            this.needsToLoadLocation=false;
+            if(this.evaluateLine(this.directiveEnum.location+this.currentLocation,null,null,null,true)){//set location first,enable disable logging
+                //autonext
+                this.nextStep();
+            }
+            return;
+        }
         if(this.makingChoice){
             console.log("Need to make a choice");
             return;
         }
-        if(!this.gameHasStarted)this.gameHasStarted=true;
         if(this.safeIncrementSequence()){
             const chapterObj = this.storyFlow[this.currentChapter];
             for (var key of Object.keys(chapterObj)) {
@@ -101,6 +123,7 @@ export default class StoryManager
         }
     }
     safeIncrementSequence(){
+        if(this.currentChapter>=this.storyFlow.length)return false;
         this.currentSequence++;
         let chapterObj = this.storyFlow[this.currentChapter];
         for (var key of Object.keys(chapterObj)) {
@@ -207,7 +230,10 @@ export default class StoryManager
         let autoNext=false;
         if(lineStr.startsWith(this.directiveEnum.location)){
             if(logging){console.log("set location :"+this.evaluateLocation(delimSplit[2]));}
-            autoNext=true;
+            if(this.gameHasStarted){
+                this.currentLocation=delimSplit[2];
+                autoNext=true;
+            } 
         }else if(lineStr.startsWith(this.directiveEnum.label)){
             if(logging){console.log("set label :"+delimSplit[1]);}
             if(!this.gameHasStarted){
@@ -296,10 +322,16 @@ export default class StoryManager
                         sepSplit[1]=this.replaceVariables(sepSplit[1]);
                     }
                     if(logging){console.log(this.evaluateCharacter(sepSplit[0])+" says "+sepSplit[1]);}
+                    let newCharacter=sepSplit[0].split(this.variationTag)[0];
+                    if(this.currentCharacter!==newCharacter){
+                        //switch character
+                        this.currentCharacter=newCharacter;
+                    }
                 }else{
                     if(lineStr.includes(this.variableTag)){
                         lineStr=this.replaceVariables(lineStr);
                     }
+                    this.currentCharacter=null;
                     if(logging){console.log("narrator says "+lineStr);}
                 }
                 //auto save here

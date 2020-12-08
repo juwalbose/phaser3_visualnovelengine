@@ -3,6 +3,7 @@ import dragonBones from "./lib/dragonBones";
 import NinePatchPlugin from 'phaser3-rex-plugins/plugins/ninepatch-plugin.js';
 import TextTypingPlugin from 'phaser3-rex-plugins/plugins/texttyping-plugin.js';
 import BBCodeTextPlugin from 'phaser3-rex-plugins/plugins/bbcodetext-plugin.js';
+import XORPlugin from 'phaser3-rex-plugins/plugins/xor-plugin.js';
 
 
 import Preloader from './scenes/Preloader'
@@ -23,6 +24,11 @@ const config = {
 	parent:'index',
 	plugins: {
 		global: [
+			{
+				key: 'rexXOR',
+				plugin: XORPlugin,
+				start: true
+			},
 			{
 				key: 'rexBBCodeTextPlugin',
 				plugin: BBCodeTextPlugin,
