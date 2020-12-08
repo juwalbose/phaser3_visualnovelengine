@@ -104,7 +104,20 @@ export default class Test extends Phaser.Scene
     this.scale.on('resize',this.resizeResponder,this);
     this.scale.on('orientationchange', this.orientationResponder,this);
 
+    this.input.on('pointerdown', this.handleMousePress, this);
+
     this.resize();
+
+    this.storyManager.nextStep();
+
+  }
+  handleMousePress (pointer) {
+    if(this.storyManager.makingChoice){
+      let choice=Phaser.Math.Between(0, 1);
+      this.storyManager.makeChoice(choice);
+    }else{
+      this.storyManager.nextStep();
+    }
   }
   zoneCallback(){
     console.log('zone');

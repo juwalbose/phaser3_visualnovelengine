@@ -1,4 +1,5 @@
 {
+    "storyName":{"name":"Demo Test","aka":"demoTest"},
     "locations": [
         {"name":"Lucy's Apartment","aka":"la","image":"lucy_apartment_bg.jpg"},
         {"name":"Sam's Home","aka":"sh","image":"sam_home_bg.jpg"},
@@ -6,7 +7,7 @@
         {"name":"School","aka":"sc","image":"school_bg.jpg"}
     ],
     "characters":[
-        {"name":"Dragon","aka":"d","texture":"src/assets/Dragon_tex.png","textureData":"src/assets/Dragon_tex.json","skeletonData":"src/assets/Dragon_ske.json"},
+        {"name":"Lannie","aka":"la","texture":"src/assets/Lannie_tex.png","textureData":"src/assets/Lannie_tex.json","skeletonData":"src/assets/Lannie_ske.json"},
         {"name":"Lucy","aka":"l","texture":"src/assets/Lucy_tex.png","textureData":"src/assets/Lucy_tex.json","skeletonData":"src/assets/Lucy_ske.json"},
         {"name":"Sam","aka":"s","texture":"src/assets/Sam_tex.png","textureData":"src/assets/Sam_tex.json","skeletonData":"src/assets/Sam_ske.json"}
     ],
@@ -23,6 +24,14 @@
         "charm":0,
         "name":"James"
     },
+
+    "directiveEnum" : {"location":"|LOCATION|","choice":"|CHOICE|", "branch":"|GOTO|", "check":"|IF|", "label":"|LABEL"},
+    "directiveDelimiter":"|",
+    "variableTag":"$",
+    "variationTag":"_",
+    "separationTag":":",
+    "expSeparationTag":"*",
+
     "storyFlow":[
         {"Prologue":[
             "|LOCATION|sm",
@@ -49,7 +58,11 @@
             "|LABEL4|They got into Sam's car and made their way to Lucy's apartment."
         ]},
         {"Chapter 1":[
-
+            "|LOCATION|la",
+            "Lucy and Sam runs into Lannie at Lucy's apartment.",
+            "la_w:And who is this handsome thing...",
+            "Lucy blushes but recovers fast!",
+            "l_n:Lannie, meet Sam. Sam this is my best bud Lannie"
         ]},
         {"Chapter 2":[
 

@@ -287,7 +287,7 @@ export default class Preloader extends Phaser.Scene
         }
         let sm = new StoryManager(jsonData);
 
-        if(sm.parseAndValidateStory()){
+        if(sm.parseLoadAndInitStory(false)){//enable disable logging parsing data
             let vm = new ViewManager(1920,1080,50,50);
             console.log("Story data validated!");
             this.scene.start("Test",{ viewManager:vm,storyManager:sm });
