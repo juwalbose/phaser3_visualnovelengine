@@ -2,6 +2,8 @@ import Phaser from 'phaser'
 
 //https://github.com/DragonBones/DragonBonesJS/blob/master/Phaser/Demos/src/ReplaceSlotDisplay.ts
 
+//http://developer.egret.com/en/github/egret-docs/DB/dbLibs/replaceTexture/index.html
+
 export default class Swap extends Phaser.Scene
 {
 	constructor()
@@ -10,6 +12,7 @@ export default class Swap extends Phaser.Scene
     }
     preload()
     {
+        /*
         this.load.dragonbone(
             "mecha_1004d",
             "src/assets/mecha_1004d_show/mecha_1004d_show_tex.png",
@@ -23,10 +26,40 @@ export default class Swap extends Phaser.Scene
             "src/assets/weapon_1004_show/weapon_1004_show_ske.json"
         );
         
+        this.load.dragonbone(
+            "MultiFaceTest",
+            "src/assets/multiface/MultiFaceTest_tex.png",
+            "src/assets/multiface/MultiFaceTest_tex.json",
+            "src/assets/multiface/MultiFaceTest_ske.json"
+        );
+
+        this.load.dragonbone(
+            "Sam",
+            "src/assets/Anims/Sam_tex.png",
+            "src/assets/Anims/Sam_tex.json",
+            "src/assets/Anims/Sam_ske.json"
+        );*/
+
+        this.load.dragonbone(
+            "Sam",
+            "src/assets/Anims/SamSimple_tex.png",
+            "src/assets/Anims/SamSimple_tex.json",
+            "src/assets/Anims/SamSimple_ske.json"
+        );
+
+        this.load.dragonbone(
+            "Lucy",
+            "src/assets/Anims/Lucy_tex.png",
+            "src/assets/Anims/Lucy_tex.json",
+            "src/assets/Anims/Lucy_ske.json"
+        );
+        
+        
     }
 
     create()
     {
+        /*
         this.WEAPON_RIGHT_LIST = ["weapon_1004_r", "weapon_1004b_r", "weapon_1004c_r", "weapon_1004d_r", "weapon_1004e_r"];
 
         this._leftWeaponIndex = 0;
@@ -56,7 +89,32 @@ export default class Swap extends Phaser.Scene
         });
         //
         console.log("Touch screen left / center / right to replace slot display.");
+        */
+
+       this.sam = this.add.armature("Sam", "Sam");//check 2 names in the ske json matches
+       this.sam.x = 300;
+       this.sam.y = 600;
+       this.sam.scale=0.3;
+       this.sam.animation.play();
+
+       this.lucy = this.add.armature("Lucy", "Lucy");//check 2 names in the ske json matches
+       this.lucy.x = 600;
+       this.lucy.y = 600;
+       this.lucy.scale=0.3;
+       this.lucy.animation.play();
+
+       this.factory = this.dragonbone.factory;
+
+       this.input.on('pointerdown', () => {
+            this.swapDisplay();  
+        });
     }
+    swapDisplay(){
+        let newIndex=Phaser.Math.Between(0, 5);
+        this.sam.armature.getSlot("Face").displayIndex = newIndex;
+        this.lucy.armature.getSlot("Face").displayIndex = newIndex;
+    }
+    /*
     _replaceDisplay(type) {
         if (type === -1) {
             this._rightWeaponIndex++;
@@ -86,8 +144,8 @@ export default class Swap extends Phaser.Scene
 
                     this._logoText.setOrigin(.5, .5);
                 }
-                logoSlot.display = this._logoText;*/
+                logoSlot.display = this._logoText;
             }
         }
-    }
+    }*/
 }

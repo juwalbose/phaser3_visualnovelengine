@@ -36,6 +36,7 @@ export default class Test extends Phaser.Scene
     let bg=this.add.image(0,0,'bg');
     this.viewManager.addToDisplayList(new DynamicScalePosItem(bg,0.5,0.5));
 
+    //http://developer.egret.com/en/github/egret-docs/DB/dbLibs/copy/index.html
     let arm = this.add.armature("Dragon", "Dragon");
     arm.animation.play("walk");
     this.viewManager.addToDisplayList(new DynamicScalePosItem(arm,0.9,0.8,1));
