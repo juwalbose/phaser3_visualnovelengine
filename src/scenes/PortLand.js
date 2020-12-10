@@ -1,4 +1,6 @@
 import Phaser from 'phaser'
+import DialogText from '../components/DialogText';
+import Choice from '../components/Choice';
 
 export default class PortLand extends Phaser.Scene
 {
@@ -19,7 +21,7 @@ export default class PortLand extends Phaser.Scene
     preload()
     {
       this.load.image('bg', 'src/assets/images/supermarket_bg.jpg');
-      this.load.image('ninepatch', 'src/assets/images/ninepatch.png');  
+      this.load.image('bluebase', 'src/assets/images/bluebase.png');    
       this.load.dragonbone(
         "Sam",
         "src/assets/Anims/Sam_tex.png",
@@ -40,59 +42,21 @@ export default class PortLand extends Phaser.Scene
       this.sam.animation.play();
       this.viewManager.addToDisplayList(this.sam,itemTypeEnum.character);
 
-
-      //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/bbcodetext/
-      let s1 = `What should I do[color=blue]??[/color]
-      [i][b][color=red]FIGHT[/color]!![/b][/i]
-      H[size=26]M[size=24]M[size=22]M[/size]
-      [shadow]FLIGHT[/shadow]
-      [color=white][stroke]DO NOTHING[/stroke]
-      [stroke=blue]SOMETHING[/stroke]`;
-      let text = this.add.rexBBCodeText(0, 0, s1, {
-        backgroundColor: '#555',
-        fontSize: '30px',
-        //align: 'left',
-        wrap: {
-            mode: 'word',
-            width: 500
-        },
-
-        stroke: 'red',
-        strokeThickness: 1,
-        shadow: {
-            offsetX: 3,
-            offsetY: 3,
-            blur: 2,
-            color: 'black'
-        }
-      });
-
-      //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/texttyping/
-      var typing = this.plugins.get('rexTextTyping').add(text, {
-        speed: 40,       // typing speed in ms
-        //typeMode: 0,      //0|'left-to-right'|1|'right-to-left'|2|'middle-to-sides'|3|'sides-to-middle'
-        //setTextCallback: function(text, isLastChar, insertIdx){ return text; }  // callback before set-text
-        //setTextCallbackScope: null
-      });
-      typing.start(s1);
-
-      this.viewManager.addToDisplayList(text,itemTypeEnum.dialog);
+      this.dialog = new DialogText(this,0,0,500,'bluebase','46');
+      this.add.existing(this.dialog);
+      this.viewManager.addToDisplayList(this.dialog,itemTypeEnum.dialog);
 
       let numChoices=5;
-
-      //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ninepatch/
       for (let index = 0; index < numChoices; index++) {
-        let box=this.add.rexNinePatch({x: 0, y: 0,width: 100, height: 100,key: 'ninepatch',
-          columns: [20, undefined, 20],
-          rows: [20, undefined, 20],
-        });
-        this.viewManager.addToDisplayList(box,itemTypeEnum.choice);
+        let choice = new Choice(this,0,0,500,'bluebase','40');
+        this.add.existing(choice);
+        choice.setText(`[shadow][stroke=blue]Some random text with choice no.[/stroke][/shadow]`+index);
+        this.viewManager.addToDisplayList(choice,itemTypeEnum.choice);
       }
 
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/zone/
       var zone = this.add.zone(300, 400, 200, 200).setInteractive({ useHandCursor: true}).on('pointerdown',this.zoneCallback);
       
-
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/quest/ //incremental choice progression
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/fsm/ //finite shate machine
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/flash/ flash effect
@@ -111,6 +75,12 @@ export default class PortLand extends Phaser.Scene
       this.storyManager.nextStep();
 
       //let timedEvent = this.time.delayedCall(1000, this.clearChoices, [], this);
+      this.time.delayedCall(3000, this.sayDialog(), [], this);
+    }
+    sayDialog(){
+      let s1 = `[shadow][stroke=blue]Some random text which I am writing here to test this dialog box. Does this work?
+What should I do[color=blue]??[/color][i][b][color=red]FIGHT[/color]!![/b][/i]H[size=45]M[size=40]M[size=35]M[/size]FLIGHT[color=white] DO NOTHING SOMETHING[/stroke][/shadow]`;
+      this.dialog.say(s1);
     }
     clearChoices(arg){
       this.viewManager.clearChoiceList();

@@ -8,7 +8,7 @@ export default class ViewManager
         this.layoutData=jsonData.layoutData;
         this.currentOrientation="landscape";
         this.characterOnScene=true;
-        this.characterOnLeft=true;
+        this.characterOnLeft=false;
         
         this.backgroundObjects=[];
         this.characterObjects=[];
@@ -60,8 +60,8 @@ export default class ViewManager
         
         for (let index = 0; index < this.dialogObjects.length; index++) {
             const element = this.dialogObjects[index];
-            element.item.resize(this.layoutData[orientation].dialog.size.width, this.layoutData[orientation].dialog.size.height);
-            //element.item.x=this.layoutData[orientation].dialog.position.x;
+            //element.item.resize(this.layoutData[orientation].dialog.size.width, this.layoutData[orientation].dialog.size.height);
+            element.item.assignNewSize(this.layoutData[orientation].dialog.size.width, this.layoutData[orientation].dialog.size.height);
             if(this.characterOnScene){
                 if(orientation==="portrait"){
                     element.item.x=this.layoutData[orientation].background.position.x;
@@ -79,7 +79,7 @@ export default class ViewManager
         }
         for (let index = 0; index < this.choiceObjects.length; index++) {
             const element = this.choiceObjects[index];
-            element.item.resize(this.layoutData[orientation].choice.size.width, this.layoutData[orientation].choice.size.height);
+            element.item.assignNewSize(this.layoutData[orientation].choice.size.width, this.layoutData[orientation].choice.size.height);
             //element.item.x=this.layoutData[orientation].choice.position.x;
             if(this.characterOnScene){
                 if(this.characterOnLeft){
@@ -105,11 +105,11 @@ export default class ViewManager
                 this.characterObjects.push(new LayoutItem(item,itemTypeEnum.character));
             break;
             case itemTypeEnum.dialog:
-                item.setOrigin(this.layoutData[this.currentOrientation].background.origin.x,this.layoutData[this.currentOrientation].background.origin.y);
+                //item.setOrigin(this.layoutData[this.currentOrientation].background.origin.x,this.layoutData[this.currentOrientation].background.origin.y);
                 this.dialogObjects.push(new LayoutItem(item,itemTypeEnum.dialog));
             break;
             case itemTypeEnum.choice:
-                item.setOrigin(this.layoutData[this.currentOrientation].choice.origin.x,this.layoutData[this.currentOrientation].choice.origin.y);
+                //item.setOrigin(this.layoutData[this.currentOrientation].choice.origin.x,this.layoutData[this.currentOrientation].choice.origin.y);
                 this.choiceObjects.push(new LayoutItem(item,itemTypeEnum.choice));
             break;
         }
