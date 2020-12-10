@@ -2,6 +2,9 @@ Features
 
 Non branching story (first priority)
 
+Parse thoughts
+Portrait, Landscape fixed canvas, scaling and positioning
+
 Landscape Portrait Detection and scene switching DONE
 Themeing entire game with single theme file
 Story Manager with globally callable Next to advance DONE
@@ -9,7 +12,7 @@ Custom Transitions for Scenes, Characters, Dialogs
 Save and Load (Auto save progress) DONE
 Encrypted saved data DONE
 Characters with simple animation using dragon bones or such which is easy to apply to new character NOT POSSIBLE as skinning is not available for Phaser DB
-Characters with composition for dress accessories & facial expressions DONE
+Characters with composition for dress accessories & facial expressions DONE simplistic
 Ability to add small particle effects & animations on background scene (lights, fire etc)
 
 

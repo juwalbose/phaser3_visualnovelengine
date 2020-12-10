@@ -288,9 +288,16 @@ export default class Preloader extends Phaser.Scene
         let sm = new StoryManager(this, jsonData);
 
         if(sm.parseLoadAndInitStory(false)){//enable disable logging parsing data
-            let vm = new ViewManager(1920,1080,50,50);
+            let jsonDataNew=this.cache.json.get('data');
+            if(jsonDataNew===null){
+                console.log("Data JSON corrupt!");
+                return false;
+            }
+            
+            //let vm = new ViewManager(jsonDataNew.designSize.width,jsonDataNew.designSize.height,50,50);//uncomment to work with Test.js
+            let vm = new ViewManager(jsonDataNew);
             console.log("Story data validated!");
-            this.scene.start("Swap",{ viewManager:vm,storyManager:sm });
+            this.scene.start("PortLand",{ viewManager:vm,storyManager:sm });
         }else{
             console.log("Cannot proceed with corrupt story file!");
         }

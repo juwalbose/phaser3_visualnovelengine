@@ -1,9 +1,60 @@
 {
-  "ui_theme": {
-    "image":"general.png","atlas":"general.json"
+  "designSize":{"width":1920,"height":1080},
+  "layoutData":{
+    "landscape":{
+      "background":{
+        "slide":0,
+        "origin":{"x":0.5,"y":0.5},
+        "position":{"x":960,"y":540},
+        "size":{"width":1920,"height":1080}
+      },
+      "character":{
+        "slide":300,
+        "origin":{"x":0.5,"y":1},
+        "position":{"x":1620,"y":1100},
+        "size":{"width":480,"height":1080}
+      },
+      "dialog":{
+        "slide":690,
+        "origin":{"x":0.5,"y":0.5},
+        "position":{"x":690,"y":300},
+        "size":{"width":1000,"height":300}
+      },
+      "choice":{
+        "slide":690,
+        "origin":{"x":0.5,"y":0.5},
+        "position":{"x":690,"y":500},
+        "size":{"width":800,"height":80}
+      }
+    },
+    "portrait":{
+      "background":{
+        "slide":250,
+        "origin":{"x":0.5,"y":0.5},
+        "position":{"x":540,"y":960},
+        "size":{"width":1920,"height":1920}
+      },
+      "character":{
+        "slide":270,
+        "origin":{"x":0.5,"y":1},
+        "position":{"x":810,"y":2000},
+        "size":{"width":480,"height":1400}
+      },
+      "dialog":{
+        "slide":0,
+        "origin":{"x":0.5,"y":0.5},
+        "position":{"x":540,"y":400},
+        "size":{"width":1000,"height":300}
+      },
+      "choice":{
+        "slide":290,
+        "origin":{"x":0.5,"y":0.5},
+        "position":{"x":290,"y":640},
+        "size":{"width":500,"height":160}
+      }
+    }
   },
+  "ui_theme": {"image":"general.png","atlas":"general.json"},
   "font":"fontname.ttf",
-  "story":{
-    "default_language":"en","file_name":"story"
-  }
+  "story":{"default_language":"en","file_name":"story"}
 }
