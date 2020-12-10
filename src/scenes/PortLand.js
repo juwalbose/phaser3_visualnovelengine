@@ -22,9 +22,9 @@ export default class PortLand extends Phaser.Scene
       this.load.image('ninepatch', 'src/assets/images/ninepatch.png');  
       this.load.dragonbone(
         "Sam",
-        "src/assets/Anims/SamSimple_tex.png",
-        "src/assets/Anims/SamSimple_tex.json",
-        "src/assets/Anims/SamSimple_ske.json"
+        "src/assets/Anims/Sam_tex.png",
+        "src/assets/Anims/Sam_tex.json",
+        "src/assets/Anims/Sam_ske.json"
       );
     }
 
@@ -109,6 +109,11 @@ export default class PortLand extends Phaser.Scene
       this.resize();
 
       this.storyManager.nextStep();
+
+      //let timedEvent = this.time.delayedCall(1000, this.clearChoices, [], this);
+    }
+    clearChoices(arg){
+      this.viewManager.clearChoiceList();
     }
 
     handleMousePress (pointer) {

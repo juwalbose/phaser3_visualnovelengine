@@ -2,8 +2,8 @@ Features
 
 Non branching story (first priority)
 
-Parse thoughts
-Portrait, Landscape fixed canvas, scaling and positioning
+Parse thoughts DONE
+Portrait, Landscape fixed canvas, scaling and positioning DONE
 
 Landscape Portrait Detection and scene switching DONE
 Themeing entire game with single theme file

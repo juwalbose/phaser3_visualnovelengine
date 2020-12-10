@@ -25,6 +25,7 @@ export default class StoryManager
         this.variableTag=this.storyData.variableTag;
         this.variationTag=this.storyData.variationTag;
         this.separationTag=this.storyData.separationTag;
+        this.thoughtTag=this.storyData.thoughtTag;
         this.expSeparationTag=this.storyData.expSeparationTag;
 
         this.storyFlow=this.storyData.storyFlow;
@@ -43,7 +44,7 @@ export default class StoryManager
 
         let parseResult= this.parseAndValidateStory(logging);
 
-        var decResult = this.scene.plugins.get('rexXOR').Decrypt(localStorage.getItem(this.cfStoryName+'_saveFile'), "V!sualF!ct!ons");
+        var decResult = this.scene.plugins.get('rexXOR').Decrypt(localStorage.getItem(this.cfStoryName+'_saveFile'), "setnewpassword");
         //console.log(decResult);
         let file = JSON.parse(decResult);
         if(file){
@@ -66,7 +67,7 @@ export default class StoryManager
         file.currentSequence=this.currentSequence;
         file.currentLocation=this.currentLocation;
 
-        var encResult = this.scene.plugins.get('rexXOR').Encrypt(JSON.stringify(file), "V!sualF!ct!ons");
+        var encResult = this.scene.plugins.get('rexXOR').Encrypt(JSON.stringify(file), "setnewpassword");
         //console.log(encResult);
         localStorage.setItem(this.cfStoryName+'_saveFile',encResult);
 
@@ -173,7 +174,7 @@ export default class StoryManager
 
         for (let innerIndex = 0; innerIndex < this.storyData.characterExpressionTags.length; innerIndex++) {
             const expressionTag = this.storyData.characterExpressionTags[innerIndex];
-            this.gameCharacterExpressions[expressionTag.aka]=expressionTag.name;
+            this.gameCharacterExpressions[expressionTag.aka]=expressionTag;
         }
         
         /*
@@ -321,7 +322,13 @@ export default class StoryManager
                     if(sepSplit[1].includes(this.variableTag)){
                         sepSplit[1]=this.replaceVariables(sepSplit[1]);
                     }
-                    if(logging){console.log(this.evaluateCharacter(sepSplit[0])+" says "+sepSplit[1]);}
+                    if(logging){
+                        if(sepSplit[1].startsWith(this.thoughtTag)){
+                            console.log(this.evaluateCharacter(sepSplit[0])+" thinks "+sepSplit[1].slice(1));
+                        }else{
+                            console.log(this.evaluateCharacter(sepSplit[0])+" says "+sepSplit[1]);
+                        }
+                    }
                     let newCharacter=sepSplit[0].split(this.variationTag)[0];
                     if(this.currentCharacter!==newCharacter){
                         //switch character
@@ -368,7 +375,7 @@ export default class StoryManager
     }
     evaluateCharacter(exp){
         let sepSplit=exp.split(this.variationTag);
-        return this.gameCharacters[sepSplit[0]].name+" ("+this.gameCharacterExpressions[sepSplit[1]]+")";
+        return this.gameCharacters[sepSplit[0]].name+" ("+this.gameCharacterExpressions[sepSplit[1]].name+")";
     }
     evaluateExpression(exp,logging){
         let sepSplit=exp.split(this.expSeparationTag);

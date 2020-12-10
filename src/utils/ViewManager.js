@@ -114,6 +114,13 @@ export default class ViewManager
             break;
         }
     }
+    clearChoiceList(){
+        for (let index = 0; index < this.choiceObjects.length; index++) {
+            const element = this.choiceObjects[index];
+            element.item.destroy();
+        }
+        this.choiceObjects=[];
+    }
     /*
     resizeAndLayout(newWidth,newHeight){
         let currentWidthRatio=this.designWidth/newWidth;
