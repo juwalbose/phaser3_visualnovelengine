@@ -13,6 +13,7 @@ export default class ViewManager
         this.backgroundObjects=[];
         this.characterObjects=[];
         this.dialogObjects=[];
+        this.dialogWickObjects=[];
         this.choiceObjects=[];
     }
     resizeAndLayout(orientation){//"landscape", "portrait"
@@ -20,16 +21,17 @@ export default class ViewManager
         let newDesignSize={width:0,height:0};
         if(orientation==="landscape"){
             newDesignSize.width=Math.max(this.designSize.width,this.designSize.height);
-            newDesignSize.height=Math.min(this.designSize.width,this.designSize.height);
+            newDesignSize.height=Math.min(this.designSize.width,this.designSize.height);   
         }else{
             newDesignSize.width=Math.min(this.designSize.width,this.designSize.height);
             newDesignSize.height=Math.max(this.designSize.width,this.designSize.height);
         }
+        /*//if we are enlarging a 1920x1080 image to fit 1920 in portrait height, uncomment and update data json height value
         for (let index = 0; index < this.backgroundObjects.length; index++) {
             const element = this.backgroundObjects[index];
             let newScale=this.layoutData[orientation].background.size.height/element.originalHeight;
             element.item.setScale(newScale);
-        }
+        }*/
        
         for (let index = 0; index < this.characterObjects.length; index++) {
             const element = this.characterObjects[index];
@@ -42,6 +44,7 @@ export default class ViewManager
             const element = this.dialogObjects[index];
             element.item.assignNewSize(this.layoutData[orientation].dialog.size.width, this.layoutData[orientation].dialog.size.height);
         }
+
         for (let index = 0; index < this.choiceObjects.length; index++) {
             const element = this.choiceObjects[index];
             element.item.assignNewSize(this.layoutData[orientation].choice.size.width, this.layoutData[orientation].choice.size.height);
@@ -54,9 +57,27 @@ export default class ViewManager
         if(orientation==="landscape"){
             newDesignSize.width=Math.max(this.designSize.width,this.designSize.height);
             newDesignSize.height=Math.min(this.designSize.width,this.designSize.height);
+
+            for (let i = 0; i < this.dialogWickObjects.length; i++) {//flip dialog wicks
+                const e = this.dialogWickObjects[i];
+                if(this.characterOnLeft){
+                    e.item.setScale(1,1);
+                }else{
+                    e.item.setScale(-1,1);
+                }
+            }
         }else{
             newDesignSize.width=Math.min(this.designSize.width,this.designSize.height);
             newDesignSize.height=Math.max(this.designSize.width,this.designSize.height);
+
+            for (let i = 0; i < this.dialogWickObjects.length; i++) {//flip dialog wicks
+                const e = this.dialogWickObjects[i];
+                if(this.characterOnLeft){
+                    e.item.setScale(-1,1);
+                }else{
+                    e.item.setScale(1,1);
+                }
+            }
         }
         for (let index = 0; index < this.backgroundObjects.length; index++) {
             const element = this.backgroundObjects[index];
@@ -102,6 +123,18 @@ export default class ViewManager
                 element.item.x=this.layoutData[orientation].background.position.x;
             }
             element.item.y=this.layoutData[orientation].dialog.position.y;
+            if(this.characterOnScene){
+                for (let i = 0; i < this.dialogWickObjects.length; i++) {//align dialog wicks
+                    const e = this.dialogWickObjects[i];
+                    if(this.characterOnLeft){
+                        e.item.x= element.item.x-this.layoutData[orientation].dialogwick.slide;
+                    }else{
+                        e.item.x= element.item.x+this.layoutData[orientation].dialogwick.slide;
+                    }
+                    
+                    e.item.y= element.item.y+element.item.height/2;
+                }
+            }
         }
         for (let index = 0; index < this.choiceObjects.length; index++) {
             const element = this.choiceObjects[index];
@@ -118,7 +151,7 @@ export default class ViewManager
         }
     }
     addToDisplayList(item,itemType){
-        let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog"};
+        let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog",dialogWick:"dialogWick"};
         switch(itemType){
             case itemTypeEnum.background:
                 item.setOrigin(this.layoutData[this.currentOrientation].background.origin.x,this.layoutData[this.currentOrientation].background.origin.y);
@@ -135,6 +168,10 @@ export default class ViewManager
             case itemTypeEnum.choice:
                 //item.setOrigin(this.layoutData[this.currentOrientation].choice.origin.x,this.layoutData[this.currentOrientation].choice.origin.y);
                 this.choiceObjects.push(new LayoutItem(item,itemTypeEnum.choice));
+            break;
+            case itemTypeEnum.dialogWick:
+                item.setOrigin(this.layoutData[this.currentOrientation].dialogwick.origin.x,this.layoutData[this.currentOrientation].dialogwick.origin.y);
+                this.dialogWickObjects.push(new LayoutItem(item,itemTypeEnum.dialogWick));
             break;
         }
     }

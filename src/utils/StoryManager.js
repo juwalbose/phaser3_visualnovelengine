@@ -110,7 +110,7 @@ export default class StoryManager extends Phaser.Events.EventEmitter
     }
     makeChoice(whichChoice){
         if(this.makingChoice){
-            console.log("choosing "+(whichChoice+1));
+            //console.log("choosing "+(whichChoice+1));
             this.makingChoice=false;
             const chapterObj = this.storyFlow[this.currentChapter];
             for (var key of Object.keys(chapterObj)) {

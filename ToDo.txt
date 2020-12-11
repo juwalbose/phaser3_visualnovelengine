@@ -6,7 +6,7 @@ Parse thoughts DONE
 Portrait, Landscape fixed canvas, scaling and positioning DONE
 
 Landscape Portrait Detection and scene switching DONE
-Themeing entire game with single theme file
+Themeing entire game with single theme file (Just need to add atlas)
 Story Manager with globally callable Next to advance DONE
 Custom Transitions for Scenes, Characters, Dialogs
 Save and Load (Auto save progress) DONE

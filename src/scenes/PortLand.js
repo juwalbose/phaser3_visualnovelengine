@@ -31,7 +31,7 @@ export default class PortLand extends Phaser.Scene
 
       this.onSceneCharacters={};
 
-      let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog"};
+      let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog",dialogWick:"dialogWick"};
     
       this.bg=this.add.sprite(0,0,this.storyManager.gameLocations[Object.keys(this.storyManager.gameLocations)[0]].cfName);
       this.viewManager.addToDisplayList(this.bg,itemTypeEnum.background);
@@ -41,17 +41,24 @@ export default class PortLand extends Phaser.Scene
         armature.animation.play();
         this.viewManager.addToDisplayList(armature,itemTypeEnum.character);
         this.onSceneCharacters[this.storyManager.gameCharacters[key].cfName]=armature;
+        armature.visible=false;
       }
 
-      
-      this.dialog = new DialogText(this,0,0,500,'bluebase','46');
+      this.dialog = new DialogText(this,0,0,500,'base','46');
       this.add.existing(this.dialog);
       this.viewManager.addToDisplayList(this.dialog,itemTypeEnum.dialog);
       this.dialog.visible=false;
 
+      this.talkWick=this.add.sprite(0,0,'say');
+      this.viewManager.addToDisplayList(this.talkWick,itemTypeEnum.dialogWick);
+      this.thinkWick=this.add.sprite(0,0,'think');
+      this.viewManager.addToDisplayList(this.thinkWick,itemTypeEnum.dialogWick);
+      this.thinkWick.visible=false;
+      this.talkWick.visible=false;
+
       this.maxChoices=6;
       for (let index = 0; index < this.maxChoices; index++) {
-        this["choice"+index] = new Choice(this,0,0,500,'bluebase','40',index);
+        this["choice"+index] = new Choice(this,0,0,500,'base','40',index);
         this.add.existing(this["choice"+index]);
         this["choice"+index].setText(`[shadow][stroke=blue]Some random text with choice no.[/stroke][/shadow]`+index);
         this.viewManager.addToDisplayList(this["choice"+index],itemTypeEnum.choice);
@@ -79,7 +86,6 @@ export default class PortLand extends Phaser.Scene
       this.input.on('gameobjectdown',this.enterButtonActiveState,this);
       this.input.on('gameobjectup',this.handleChoicePress,this);
 
-      //this.input.on('pointerup', this.handleMousePress,this);
       this.bg.setInteractive();
       
       this.resize();
@@ -89,24 +95,43 @@ export default class PortLand extends Phaser.Scene
       this.storyManager.on('showDialog', this.handleShowDialog,this);
       this.storyManager.nextStep();
 
-      //this.time.delayedCall(3000, this.sayDialog(), [], this);
     }
     handleShowLocation(loc){
       this.bg.setTexture(loc);
     }
     handleShowChoices(choices){
-      console.log("h choices",choices);
       for (let index = 0; index < choices.length; index++) {
         this["choice"+index].setText(choices[index]);
         this["choice"+index].visible=true;
       }
     }
     handleShowDialog(character,moodIndex,action,dialog,removeCharacters,replaceCharacter){
-      console.log("h dialog",character,moodIndex,action,dialog,removeCharacters,replaceCharacter);
+      //console.log("h dialog",character,moodIndex,action,dialog,removeCharacters,replaceCharacter);
       if(character!==null){
         this.viewManager.characterOnScene=true;
+        
+        for (var key of Object.keys(this.onSceneCharacters)) {
+          if(key===character){
+            this.onSceneCharacters[character].visible=true;
+            this.onSceneCharacters[character].armature.getSlot("Face").displayIndex =moodIndex;
+          }else{
+            this.onSceneCharacters[key].visible=false;
+          }
+        }
+        if(action==='say'){
+          this.talkWick.visible=true;
+          this.thinkWick.visible=false;
+        }else{
+          this.thinkWick.visible=true;
+          this.talkWick.visible=false;
+        }
       }else{
         this.viewManager.characterOnScene=false;
+        this.thinkWick.visible=false;
+        this.talkWick.visible=false;
+        for (var key of Object.keys(this.onSceneCharacters)) {
+          this.onSceneCharacters[key].visible=false;
+        }
       }
       this.dialog.say(dialog);
       this.dialog.visible=true;
@@ -128,12 +153,12 @@ What should I do[color=blue]??[/color][i][b][color=red]FIGHT[/color]!![/b][/i]H[
     
     handleChoicePress (pointer,gameObject) {
       if(gameObject===this.bg){
-        console.log("mouse");
+        //console.log("mouse");
         if(!this.storyManager.makingChoice){
           this.storyManager.nextStep();
         }
       }else{
-        console.log("tapped "+gameObject.parentContainer.choiceId);
+        //console.log("tapped "+gameObject.parentContainer.choiceId);
         if(this.storyManager.makingChoice){
           let choice=gameObject.parentContainer.choiceId;
           this.storyManager.makeChoice(choice);
