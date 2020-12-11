@@ -82,7 +82,7 @@
             "l_n:!This is awkward",
             "Everything is driven by simple lines of text in a json file.",
             "All you need to create a new story is the necessary art & some lines of well formatted text!",
-            "As we are auto saving the progress, if you want to retry please clear cache and reload! ",
+            "Auto saving is disabled for this build so that it replays once reloaded.",
             "Have fun!"
         ]},
         {"Chapter 2":[

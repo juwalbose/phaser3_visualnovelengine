@@ -1,6 +1,24 @@
 # Introduction
 A very simple Visual Novel Engine using DragonBones with Phaser 3 while using Webpack and ES6.
+
 [SEE LIVE DEMO HERE](https://juwalbose.github.io/phaser3_visualnovelengine/)
+
+## FEATURES
+
+|---------|-------------|
+|1| Single json file drives the entire novel |
+|2| Syntax within the json to drive necessary story actions |
+|3| Show narrator & character dialogs |
+|4| Branch to labels ad needed of based on choices |
+|5| Display and process 6 choices |
+|6| Dragon Bones based non mesh animated character support |
+|7| Switching character face based on mood instructions in json |
+|8| Track, update, check & display game variables all using the json syntax |
+|9| Load various locations |
+|10| Support landscape and portrait modes. Responsively adjust to resizing |
+|11| Auto save progress to local storage. Restart where left off |
+|12| XOR encrypted save data |
+|13| Face switching technique can be extended to dressing up the characters |
 
 Note: This is a fork of the phaser3-project-template repository.
 ## Phaser 3 Webpack Project Template
