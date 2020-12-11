@@ -21,7 +21,7 @@
         "size":{"width":1000,"height":300}
       },
       "dialogwick":{
-        "slide":470,
+        "slide":460,
         "origin":{"x":0.5,"y":0.06},
         "size":{"width":74,"height":76}
       },
@@ -63,10 +63,6 @@
         "size":{"width":500,"height":160}
       }
     }
-  },
-  "ui": {"base":{"image":"src/assets/images/dialogbase.png","name":"base"},
-    "think":{"image":"src/assets/images/think.png","name":"think"},
-    "say":{"image":"src/assets/images/say.png","name":"say"}
   },
   "theme":{"texture":"src/assets/images/grey.png","atlas":"src/assets/images/grey_atlas.json"},
   "font":"fontname.ttf",

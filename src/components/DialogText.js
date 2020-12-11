@@ -5,7 +5,7 @@ export default class DialogText extends Phaser.GameObjects.Container
         super(scene, x, y);
         this.margin=10;
         //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ninepatch/
-        this.base=scene.add.rexNinePatch({x: 0, y: 0, width:width, height: this.margin,key: base,
+        this.base=scene.add.rexNinePatch({x: 0, y: 0, width:width, height: this.margin,key: 'theme',baseFrame:base,
           columns: [10, undefined, 10],
           rows: [10, undefined, 10],
         });

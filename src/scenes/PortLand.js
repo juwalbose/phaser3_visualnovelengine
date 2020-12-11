@@ -44,21 +44,21 @@ export default class PortLand extends Phaser.Scene
         armature.visible=false;
       }
 
-      this.dialog = new DialogText(this,0,0,500,'base','46');
+      this.dialog = new DialogText(this,0,0,500,'dialogbase','46');
       this.add.existing(this.dialog);
       this.viewManager.addToDisplayList(this.dialog,itemTypeEnum.dialog);
       this.dialog.visible=false;
 
-      this.talkWick=this.add.sprite(0,0,'say');
+      this.talkWick=this.add.sprite(0,0,'theme','say');
       this.viewManager.addToDisplayList(this.talkWick,itemTypeEnum.dialogWick);
-      this.thinkWick=this.add.sprite(0,0,'think');
+      this.thinkWick=this.add.sprite(0,0,'theme','think');
       this.viewManager.addToDisplayList(this.thinkWick,itemTypeEnum.dialogWick);
       this.thinkWick.visible=false;
       this.talkWick.visible=false;
 
       this.maxChoices=6;
       for (let index = 0; index < this.maxChoices; index++) {
-        this["choice"+index] = new Choice(this,0,0,500,'base','40',index);
+        this["choice"+index] = new Choice(this,0,0,500,'dialogbase','40',index);
         this.add.existing(this["choice"+index]);
         this["choice"+index].setText(`[shadow][stroke=blue]Some random text with choice no.[/stroke][/shadow]`+index);
         this.viewManager.addToDisplayList(this["choice"+index],itemTypeEnum.choice);

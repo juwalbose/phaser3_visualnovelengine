@@ -80,12 +80,8 @@ export default class Preloader extends Phaser.Scene
             console.log("Data JSON corrupt!");
             return false;
         }
-        //either load individually or use the atlas
-        this.load.image(jsonDataNew.ui.base.name, jsonDataNew.ui.base.image);
-        this.load.image(jsonDataNew.ui.think.name, jsonDataNew.ui.think.image);
-        this.load.image(jsonDataNew.ui.say.name, jsonDataNew.ui.say.image);
-
-        //this.load.atlas('theme', jsonDataNew.theme.texture, jsonDataNew.theme.atlas);
+        
+        this.load.atlas('theme', jsonDataNew.theme.texture, jsonDataNew.theme.atlas);
 
         let jsonData=this.cache.json.get('story');
         if(jsonData===null){
