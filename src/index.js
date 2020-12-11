@@ -7,22 +7,13 @@ import XORPlugin from 'phaser3-rex-plugins/plugins/xor-plugin.js';
 
 
 import Preloader from './scenes/Preloader'
-import Menu from './scenes/Menu'
-import Load from './scenes/Load'
-import Save from './scenes/Save'
-import GameOver from './scenes/GameOver'
-import GameWon from './scenes/GameWon'
 import Novel from './scenes/Novel'
-import Swap from './scenes/Swap'
-import PortLand from './scenes/PortLand'
 
 
 const config = {
 	type: Phaser.AUTO,
-	width: '100%',//enable for Test.js
+	width: '100%',
 	height: '100%',
-	//width: '1920',
-	//height: '1080',
 	disableContextMenu: true,
 	backgroundColor:'#cccccc',
 	parent:'index',
@@ -56,9 +47,8 @@ const config = {
 	input: {
         activePointers: 1
     },
-	scene: [Preloader,Menu,Load,Save,GameOver,GameWon,Novel,Swap,PortLand],
+	scene: [Preloader,Novel],
 	scale: {
-		//mode: Phaser.Scale.RESIZE//enable this for Test.js
 		mode: Phaser.Scale.FIT
     },
 	render: {

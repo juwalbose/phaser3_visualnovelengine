@@ -1,7 +1,8 @@
 Features
 
+Documentation TODO
 Non branching story (first priority)
-Choice with/wo character
+Choice with/wo character DONE
 Parse thoughts DONE
 Portrait, Landscape fixed canvas, scaling and positioning DONE
 Add player title DONE
@@ -10,17 +11,17 @@ Landscape Portrait Detection and scene switching DONE
 Themeing entire game with single theme file (Add atlas) DONE
 Story Manager with globally callable Next to advance DONE
 Smooth Transitions for Scenes, Characters, Dialogs DONE
-Scene interaction enable/disable
+Scene interaction enable/disable NOPE
 Save and Load (Auto save progress) DONE
 Encrypted saved data DONE
 Characters with simple animation using dragon bones or such which is easy to apply to new character NOT POSSIBLE as skinning is not available for Phaser DB
 Characters with composition for dress accessories & facial expressions DONE simplistic
-Ability to add small particle effects & animations on background scene (lights, fire etc)
+Ability to add small particle effects & animations on background scene (lights, fire etc) NOPE
 
 
 Interactive branching extension
 
 Tracking global variables DONE
-Choices display based on variables (enable or disable charm, intimidate etc based choices)
+Choices display based on variables (enable or disable charm, intimidate etc based choices) NOPE
 
 

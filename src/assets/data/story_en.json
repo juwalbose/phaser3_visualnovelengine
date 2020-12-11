@@ -69,7 +69,7 @@
             "New value of obtainedKey is $obtainedKey and charm is $charm",
             "See how the variable in text reflects its value like $name here",
             "|$charm*+*1|",
-            "Just incremented charm to $charm. So easy. Well let us get back to our characters...",
+            "Just incremented charm to $charm So easy. Well let us get back to our characters...",
             "|LABEL6|They got into Sam's car and made their way to Lucy's apartment.",
             "Let us switch location"
         ]},

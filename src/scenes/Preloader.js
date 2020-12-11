@@ -1,6 +1,4 @@
 import Phaser from 'phaser'
-import ViewManager from '../utils/ViewManager';
-import StoryManager from '../utils/StoryManager';
 
 export default class Preloader extends Phaser.Scene
 {
@@ -116,6 +114,6 @@ export default class Preloader extends Phaser.Scene
 
     storyComplete(){
         console.log("Assets loaded!");
-        this.scene.start("PortLand");
+        this.scene.start("Novel");
     }
 }
