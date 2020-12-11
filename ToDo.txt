@@ -1,7 +1,7 @@
 Features
 
 Non branching story (first priority)
-
+Choice with/wo character
 Parse thoughts DONE
 Portrait, Landscape fixed canvas, scaling and positioning DONE
 Add player title DONE
