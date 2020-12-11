@@ -4,12 +4,13 @@ Non branching story (first priority)
 
 Parse thoughts DONE
 Portrait, Landscape fixed canvas, scaling and positioning DONE
-Add player title
-Add texture height values per character
+Add player title DONE
+Add texture height values per character DONE
 Landscape Portrait Detection and scene switching DONE
 Themeing entire game with single theme file (Add atlas) DONE
 Story Manager with globally callable Next to advance DONE
 Smooth Transitions for Scenes, Characters, Dialogs
+Scene interaction enable/disable
 Save and Load (Auto save progress) DONE
 Encrypted saved data DONE
 Characters with simple animation using dragon bones or such which is easy to apply to new character NOT POSSIBLE as skinning is not available for Phaser DB

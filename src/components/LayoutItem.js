@@ -1,15 +1,13 @@
 export default class LayoutItem 
 {
-    constructor(item,itemType)
+    constructor(item,itemType,height=0)
 	{
-        let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog"};
         this.item=item;
         this.itemType=itemType;
-        if(itemType===itemTypeEnum.character){
-            this.originalWidth=item.width;
-            this.originalHeight=1700;
+        this.originalWidth=item.width;
+        if(itemType==="character"){
+            this.originalHeight=height;
         }else{
-            this.originalWidth=item.width;
             this.originalHeight=item.height;
         }
     }

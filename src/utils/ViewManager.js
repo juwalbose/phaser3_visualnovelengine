@@ -12,7 +12,8 @@ export default class ViewManager
         
         this.backgroundObjects=[];
         this.characterObjects=[];
-        this.dialogObjects=[];
+        this.dialogObject;
+        this.nameTagObject;
         this.dialogWickObjects=[];
         this.choiceObjects=[];
     }
@@ -40,10 +41,8 @@ export default class ViewManager
                 element.item.setScale(newScale); 
             //}
         }
-        for (let index = 0; index < this.dialogObjects.length; index++) {
-            const element = this.dialogObjects[index];
-            element.item.assignNewSize(this.layoutData[orientation].dialog.size.width, this.layoutData[orientation].dialog.size.height);
-        }
+
+        this.dialogObject.item.assignNewSize(this.layoutData[orientation].dialog.size.width, this.layoutData[orientation].dialog.size.height);
 
         for (let index = 0; index < this.choiceObjects.length; index++) {
             const element = this.choiceObjects[index];
@@ -107,8 +106,8 @@ export default class ViewManager
             }
         }
         
-        for (let index = 0; index < this.dialogObjects.length; index++) {
-            const element = this.dialogObjects[index];
+        //for (let index = 0; index < this.dialogObjects.length; index++) {
+            const element = this.dialogObject;//s[index];
             if(this.characterOnScene){
                 if(orientation==="portrait"){
                     element.item.x=this.layoutData[orientation].background.position.x;
@@ -128,14 +127,18 @@ export default class ViewManager
                     const e = this.dialogWickObjects[i];
                     if(this.characterOnLeft){
                         e.item.x= element.item.x-this.layoutData[orientation].dialogwick.slide;
+                        this.nameTagObject.item.x=element.item.x-element.item.width/2;
                     }else{
                         e.item.x= element.item.x+this.layoutData[orientation].dialogwick.slide;
+                        this.nameTagObject.item.x=element.item.x+element.item.width/2-this.nameTagObject.item.width;
                     }
                     
                     e.item.y= element.item.y+element.item.height/2;
                 }
+                
+                this.nameTagObject.item.y=element.item.y-element.item.height/2;
             }
-        }
+        //}
         for (let index = 0; index < this.choiceObjects.length; index++) {
             const element = this.choiceObjects[index];
             if(this.characterOnScene){
@@ -150,8 +153,8 @@ export default class ViewManager
             element.item.y=this.layoutData[orientation].choice.position.y+(index*this.layoutData[orientation].choice.size.height*1.1);
         }
     }
-    addToDisplayList(item,itemType){
-        let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog",dialogWick:"dialogWick"};
+    addToDisplayList(item,itemType,height=0){
+        let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog",dialogWick:"dialogWick",nameTag:"nameTag"};
         switch(itemType){
             case itemTypeEnum.background:
                 item.setOrigin(this.layoutData[this.currentOrientation].background.origin.x,this.layoutData[this.currentOrientation].background.origin.y);
@@ -159,11 +162,14 @@ export default class ViewManager
             break;
             case itemTypeEnum.character:
                 //item.setOrigin(this.layoutData[this.currentOrientation].character.origin.x,this.layoutData[this.currentOrientation].character.origin.y);
-                this.characterObjects.push(new LayoutItem(item,itemTypeEnum.character));
+                this.characterObjects.push(new LayoutItem(item,itemTypeEnum.character,height));
             break;
             case itemTypeEnum.dialog:
                 //item.setOrigin(this.layoutData[this.currentOrientation].background.origin.x,this.layoutData[this.currentOrientation].background.origin.y);
-                this.dialogObjects.push(new LayoutItem(item,itemTypeEnum.dialog));
+                this.dialogObject=new LayoutItem(item,itemTypeEnum.dialog);
+            break;
+            case itemTypeEnum.nameTag:
+                this.nameTagObject=new LayoutItem(item,itemTypeEnum.nameTag);
             break;
             case itemTypeEnum.choice:
                 //item.setOrigin(this.layoutData[this.currentOrientation].choice.origin.x,this.layoutData[this.currentOrientation].choice.origin.y);

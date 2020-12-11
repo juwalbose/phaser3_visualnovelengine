@@ -3,6 +3,7 @@ import DialogText from '../components/DialogText';
 import Choice from '../components/Choice';
 import ViewManager from '../utils/ViewManager';
 import StoryManager from '../utils/StoryManager';
+import NameTag from '../components/NameTag';
 
 export default class PortLand extends Phaser.Scene
 {
@@ -31,7 +32,7 @@ export default class PortLand extends Phaser.Scene
 
       this.onSceneCharacters={};
 
-      let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog",dialogWick:"dialogWick"};
+      let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog",dialogWick:"dialogWick",nameTag:"nameTag"};
     
       this.bg=this.add.sprite(0,0,this.storyManager.gameLocations[Object.keys(this.storyManager.gameLocations)[0]].cfName);
       this.viewManager.addToDisplayList(this.bg,itemTypeEnum.background);
@@ -39,8 +40,8 @@ export default class PortLand extends Phaser.Scene
       for (var key of Object.keys(this.storyManager.gameCharacters)) {
         let armature=this.add.armature(this.storyManager.gameCharacters[key].cfName,this.storyManager.gameCharacters[key].cfName);
         armature.animation.play();
-        this.viewManager.addToDisplayList(armature,itemTypeEnum.character);
-        this.onSceneCharacters[this.storyManager.gameCharacters[key].cfName]=armature;
+        this.viewManager.addToDisplayList(armature,itemTypeEnum.character,this.storyManager.gameCharacters[key].height);
+        this.onSceneCharacters[this.storyManager.gameCharacters[key].cfName]={model:armature,name:this.storyManager.gameCharacters[key].name};
         armature.visible=false;
       }
 
@@ -56,6 +57,11 @@ export default class PortLand extends Phaser.Scene
       this.thinkWick.visible=false;
       this.talkWick.visible=false;
 
+      this.nameTag=new NameTag(this,0,0,500,'dialogbase','40');
+      this.add.existing(this.nameTag);
+      this.viewManager.addToDisplayList(this.nameTag,itemTypeEnum.nameTag);
+      this.nameTag.visible=false;
+
       this.maxChoices=6;
       for (let index = 0; index < this.maxChoices; index++) {
         this["choice"+index] = new Choice(this,0,0,500,'dialogbase','40',index);
@@ -65,16 +71,11 @@ export default class PortLand extends Phaser.Scene
         this["choice"+index].visible=false;
       }
 
-      //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/zone/
-      //var zone = this.add.zone(300, 400, 200, 200).setInteractive({ useHandCursor: true}).on('pointerdown',this.zoneCallback);
-      
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/quest/ //incremental choice progression
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/fsm/ //finite shate machine
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/flash/ flash effect
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/shake-position/ //shake effect
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-overview/ //various UI 
-      //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/restorabledata/ //key value data store
-      //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/xor/ //xor string encryption
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-dialog/ //ui dialog box with choice buttons
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-sizer/ //sizer for layout
 
@@ -109,13 +110,14 @@ export default class PortLand extends Phaser.Scene
       //console.log("h dialog",character,moodIndex,action,dialog,removeCharacters,replaceCharacter);
       if(character!==null){
         this.viewManager.characterOnScene=true;
-        
+        this.nameTag.visible=true;
+        this.nameTag.setText(this.onSceneCharacters[character].name);
         for (var key of Object.keys(this.onSceneCharacters)) {
           if(key===character){
-            this.onSceneCharacters[character].visible=true;
-            this.onSceneCharacters[character].armature.getSlot("Face").displayIndex =moodIndex;
+            this.onSceneCharacters[character].model.visible=true;
+            this.onSceneCharacters[character].model.armature.getSlot("Face").displayIndex =moodIndex;
           }else{
-            this.onSceneCharacters[key].visible=false;
+            this.onSceneCharacters[key].model.visible=false;
           }
         }
         if(action==='say'){
@@ -129,8 +131,9 @@ export default class PortLand extends Phaser.Scene
         this.viewManager.characterOnScene=false;
         this.thinkWick.visible=false;
         this.talkWick.visible=false;
+        this.nameTag.visible=false;
         for (var key of Object.keys(this.onSceneCharacters)) {
-          this.onSceneCharacters[key].visible=false;
+          this.onSceneCharacters[key].model.visible=false;
         }
       }
       this.dialog.say(dialog);
