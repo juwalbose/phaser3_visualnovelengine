@@ -9,7 +9,7 @@ Add texture height values per character DONE
 Landscape Portrait Detection and scene switching DONE
 Themeing entire game with single theme file (Add atlas) DONE
 Story Manager with globally callable Next to advance DONE
-Smooth Transitions for Scenes, Characters, Dialogs
+Smooth Transitions for Scenes, Characters, Dialogs DONE
 Scene interaction enable/disable
 Save and Load (Auto save progress) DONE
 Encrypted saved data DONE

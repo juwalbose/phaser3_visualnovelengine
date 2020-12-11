@@ -18,7 +18,7 @@ export default class PortLand extends Phaser.Scene
       this.storyManager = new StoryManager(this, jData);
       if(this.storyManager.parseLoadAndInitStory(false)){//enable disable logging parsing data
           let jDataNew=this.cache.json.get('data');
-          this.viewManager = new ViewManager(jDataNew);
+          this.viewManager = new ViewManager(this,jDataNew);
           console.log("Story data validated!");
       }else{
         console.log("Story data validation failed!");

@@ -2,13 +2,17 @@ import LayoutItem from "../components/LayoutItem";
 
 export default class ViewManager 
 {
-    constructor(jsonData)
+    constructor(scene,jsonData)
 	{
+        this.scene=scene;
         this.designSize=jsonData.designSize;
         this.layoutData=jsonData.layoutData;
         this.currentOrientation="landscape";
         this.characterOnScene=false;
         this.characterOnLeft=false;
+
+        this.tweenDuration=500;
+        this.outsideSpawnPoints={left:-100,right:0};
         
         this.backgroundObjects=[];
         this.characterObjects=[];
@@ -27,6 +31,7 @@ export default class ViewManager
             newDesignSize.width=Math.min(this.designSize.width,this.designSize.height);
             newDesignSize.height=Math.max(this.designSize.width,this.designSize.height);
         }
+
         /*//if we are enlarging a 1920x1080 image to fit 1920 in portrait height, uncomment and update data json height value
         for (let index = 0; index < this.backgroundObjects.length; index++) {
             const element = this.backgroundObjects[index];
@@ -78,28 +83,51 @@ export default class ViewManager
                 }
             }
         }
+        this.outsideSpawnPoints.right=newDesignSize.width+100;
         for (let index = 0; index < this.backgroundObjects.length; index++) {
             const element = this.backgroundObjects[index];
+            let newX=-1;
             if(this.characterOnScene){
                 if(this.characterOnLeft){
-                    element.item.x=this.layoutData[orientation].background.position.x+this.layoutData[orientation].background.slide;
+                    //element.item.x=this.layoutData[orientation].background.position.x+this.layoutData[orientation].background.slide;
+                    newX=this.layoutData[orientation].background.position.x+this.layoutData[orientation].background.slide;
                 }else{
-                    element.item.x=this.layoutData[orientation].background.position.x-this.layoutData[orientation].background.slide;
+                    //element.item.x=this.layoutData[orientation].background.position.x-this.layoutData[orientation].background.slide;
+                    newX=this.layoutData[orientation].background.position.x-this.layoutData[orientation].background.slide;
                 }
             }else{
-                element.item.x=this.layoutData[orientation].background.position.x;
+                //element.item.x=this.layoutData[orientation].background.position.x;
+                newX=this.layoutData[orientation].background.position.x;
             }
+            this.addBgTween(element.item,newX);
             element.item.y=this.layoutData[orientation].background.position.y;
         }
        
         for (let index = 0; index < this.characterObjects.length; index++) {
             const element = this.characterObjects[index];
+            let newX=-1;
             if(this.characterOnScene){
                 if(this.characterOnLeft){
-                    element.item.x=this.layoutData[orientation].character.slide;
+                    
+                    
+                    if(element.item.x!==this.layoutData[orientation].character.slide){
+                        newX=this.layoutData[orientation].character.slide;
+                        element.item.x=this.outsideSpawnPoints.left;
+                        this.addCharTween(element.item,newX);
+                    }else{
+                        element.item.x=this.layoutData[orientation].character.slide;
+                    }
                 }else{
-                    element.item.x=newDesignSize.width-this.layoutData[orientation].character.slide;
+
+                    if(element.item.x!==newDesignSize.width-this.layoutData[orientation].character.slide){
+                        newX=newDesignSize.width-this.layoutData[orientation].character.slide;
+                        element.item.x=this.outsideSpawnPoints.right;
+                        this.addCharTween(element.item,newX);
+                    }else{
+                        element.item.x=newDesignSize.width-this.layoutData[orientation].character.slide;
+                    }
                 }
+                
                 element.item.y=this.layoutData[orientation].character.position.y;
             }else{
                 element.item.x=2*newDesignSize.width;
@@ -179,6 +207,40 @@ export default class ViewManager
                 item.setOrigin(this.layoutData[this.currentOrientation].dialogwick.origin.x,this.layoutData[this.currentOrientation].dialogwick.origin.y);
                 this.dialogWickObjects.push(new LayoutItem(item,itemTypeEnum.dialogWick));
             break;
+        }
+    }
+    addBgTween(item,newX){
+        if(item.x!==newX){
+            let tweens = this.scene.tweens.getTweensOf(item, true);
+            for (let index = 0; index < tweens; index++) {
+                let tween=tweens[index];
+                tween.stop();
+                tween.remove();
+            }
+            let tween = this.scene.tweens.add({
+                targets: item,
+                x: {from:item.x, to: newX },
+                ease: 'Back',       //Linear 'Cubic', 'Elastic', 'Bounce', 'Back'
+                duration: this.tweenDuration
+            });
+            
+        }
+    }
+    addCharTween(item,newX){
+        if(item.x!==newX){
+            let tweens = this.scene.tweens.getTweensOf(item, true);
+            for (let index = 0; index < tweens; index++) {
+                let tween=tweens[index];
+                tween.stop();
+                tween.remove();
+            }
+            let tween = this.scene.tweens.add({
+                targets: item,
+                x: {from:item.x, to: newX },
+                ease: 'Cubic',       //Linear 'Cubic', 'Elastic', 'Bounce', 'Back'
+                duration: this.tweenDuration*0.5
+            });
+            
         }
     }
     clearChoiceList(){
