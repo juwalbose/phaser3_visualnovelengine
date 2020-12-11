@@ -1,12 +1,12 @@
 {
     "storyName":{"name":"Demo Test","aka":"demoTest"},
     "locations": [
-        {"name":"Lucy's Apartment","aka":"la","image":"lucy_apartment_bg.jpg"},
-        {"name":"Supermarket","aka":"sm","image":"supermarket_bg.jpg"}
+        {"name":"Supermarket","cfName":"supermarket","aka":"sm","image":"src/assets/images/supermarket_bg.jpg"},
+        {"name":"Lucy's Apartment","cfName":"lucyapartment","aka":"la","image":"src/assets/images/lucy_apartment_bg.jpg"}
     ],
     "characters":[
-        {"name":"Lucy","aka":"l","texture":"src/assets/Anims/Lucy_tex.png","textureData":"src/assets/Anims/Lucy_tex.json","skeletonData":"src/assets/Anims/Lucy_ske.json"},
-        {"name":"Sam","aka":"s","texture":"src/assets/Anims/Sam_tex.png","textureData":"src/assets/Anims/Sam_tex.json","skeletonData":"src/assets/Anims/Sam_ske.json"}
+        {"name":"Lucy Martel","cfName":"Lucy","aka":"l","texture":"src/assets/Anims/Lucy_tex.png","textureData":"src/assets/Anims/Lucy_tex.json","skeletonData":"src/assets/Anims/Lucy_ske.json"},
+        {"name":"Sam Ruosso","cfName":"Sam","aka":"s","texture":"src/assets/Anims/Sam_tex.png","textureData":"src/assets/Anims/Sam_tex.json","skeletonData":"src/assets/Anims/Sam_ske.json"}
     ],
     "characterExpressionTags":[
         {"name":"neutral","aka":"n","index":0},

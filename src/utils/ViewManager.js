@@ -7,7 +7,7 @@ export default class ViewManager
         this.designSize=jsonData.designSize;
         this.layoutData=jsonData.layoutData;
         this.currentOrientation="landscape";
-        this.characterOnScene=true;
+        this.characterOnScene=false;
         this.characterOnLeft=false;
         
         this.backgroundObjects=[];
@@ -29,11 +29,42 @@ export default class ViewManager
             const element = this.backgroundObjects[index];
             let newScale=this.layoutData[orientation].background.size.height/element.originalHeight;
             element.item.setScale(newScale);
+        }
+       
+        for (let index = 0; index < this.characterObjects.length; index++) {
+            const element = this.characterObjects[index];
+            //if(this.characterOnScene){
+                let newScale=this.layoutData[orientation].character.size.height/element.originalHeight;
+                element.item.setScale(newScale); 
+            //}
+        }
+        for (let index = 0; index < this.dialogObjects.length; index++) {
+            const element = this.dialogObjects[index];
+            element.item.assignNewSize(this.layoutData[orientation].dialog.size.width, this.layoutData[orientation].dialog.size.height);
+        }
+        for (let index = 0; index < this.choiceObjects.length; index++) {
+            const element = this.choiceObjects[index];
+            element.item.assignNewSize(this.layoutData[orientation].choice.size.width, this.layoutData[orientation].choice.size.height);
+        }
+        this.layout(orientation);
+    }
+    layout(orientation){//"landscape", "portrait"
+        this.currentOrientation=orientation;
+        let newDesignSize={width:0,height:0};
+        if(orientation==="landscape"){
+            newDesignSize.width=Math.max(this.designSize.width,this.designSize.height);
+            newDesignSize.height=Math.min(this.designSize.width,this.designSize.height);
+        }else{
+            newDesignSize.width=Math.min(this.designSize.width,this.designSize.height);
+            newDesignSize.height=Math.max(this.designSize.width,this.designSize.height);
+        }
+        for (let index = 0; index < this.backgroundObjects.length; index++) {
+            const element = this.backgroundObjects[index];
             if(this.characterOnScene){
                 if(this.characterOnLeft){
-                    element.item.x=this.layoutData[orientation].background.position.x-this.layoutData[orientation].background.slide;
-                }else{
                     element.item.x=this.layoutData[orientation].background.position.x+this.layoutData[orientation].background.slide;
+                }else{
+                    element.item.x=this.layoutData[orientation].background.position.x-this.layoutData[orientation].background.slide;
                 }
             }else{
                 element.item.x=this.layoutData[orientation].background.position.x;
@@ -44,9 +75,6 @@ export default class ViewManager
         for (let index = 0; index < this.characterObjects.length; index++) {
             const element = this.characterObjects[index];
             if(this.characterOnScene){
-                let newScale=this.layoutData[orientation].character.size.height/element.originalHeight;
-                element.item.setScale(newScale);
-                //element.item.x=this.layoutData[orientation].character.position.x;
                 if(this.characterOnLeft){
                     element.item.x=this.layoutData[orientation].character.slide;
                 }else{
@@ -60,8 +88,6 @@ export default class ViewManager
         
         for (let index = 0; index < this.dialogObjects.length; index++) {
             const element = this.dialogObjects[index];
-            //element.item.resize(this.layoutData[orientation].dialog.size.width, this.layoutData[orientation].dialog.size.height);
-            element.item.assignNewSize(this.layoutData[orientation].dialog.size.width, this.layoutData[orientation].dialog.size.height);
             if(this.characterOnScene){
                 if(orientation==="portrait"){
                     element.item.x=this.layoutData[orientation].background.position.x;
@@ -79,8 +105,6 @@ export default class ViewManager
         }
         for (let index = 0; index < this.choiceObjects.length; index++) {
             const element = this.choiceObjects[index];
-            element.item.assignNewSize(this.layoutData[orientation].choice.size.width, this.layoutData[orientation].choice.size.height);
-            //element.item.x=this.layoutData[orientation].choice.position.x;
             if(this.characterOnScene){
                 if(this.characterOnLeft){
                     element.item.x=newDesignSize.width-this.layoutData[orientation].choice.slide;
@@ -121,47 +145,5 @@ export default class ViewManager
         }
         this.choiceObjects=[];
     }
-    /*
-    resizeAndLayout(newWidth,newHeight){
-        let currentWidthRatio=this.designWidth/newWidth;
-        let currentHeightRatio=this.designHeight/newHeight;
-        let availableWidth=newWidth-2*(newWidth*this.horizontalMargin/this.designWidth);
-
-        for (let index = 0; index < this.fullscreenDisplayList.length; index++) {
-            const element = this.fullscreenDisplayList[index];
-            if(currentWidthRatio<=currentHeightRatio){
-                element.item.setDisplaySize(newWidth,this.designHeight/currentWidthRatio);
-            }else{
-                element.item.setDisplaySize(this.designWidth/currentHeightRatio,newHeight);
-            }
-            element.item.x=element.x*newWidth;
-            element.item.y=element.y*newHeight;
-        }
-
-        for (let index = 0; index < this.heightBasedDisplayList.length; index++) {
-            const element = this.heightBasedDisplayList[index];
-            let ratio=element.heightRatio*(newHeight/this.designHeight);
-            if(element.adjustWithHeightAndWidth){
-                if(element.isNinePatch){
-                    if(element.originalWidth*ratio>availableWidth){
-                        ratio=availableWidth/element.originalWidth;
-                    }
-                    element.item.resize(element.originalWidth*ratio, element.originalHeight*ratio);
-                }else if(element.isText){
-                    if(element.originalWidth*ratio>availableWidth){
-                        ratio=availableWidth/element.originalWidth;
-                    }
-                    element.item.setScale(ratio);
-                    //txt.setWrapWidth(width);
-                }
-
-            }else{
-                element.item.setScale(ratio);
-            }
-            element.item.x=element.x*newWidth;
-            element.item.y=element.y*newHeight;
-        }
-
-    }*/
     
 }

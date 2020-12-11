@@ -54,7 +54,7 @@
       }
     }
   },
-  "ui_theme": {"image":"general.png","atlas":"general.json"},
+  "ui_base": {"image":"src/assets/images/bluebase.png","name":"bluebase"},
   "font":"fontname.ttf",
   "story":{"default_language":"en","file_name":"story"}
 }

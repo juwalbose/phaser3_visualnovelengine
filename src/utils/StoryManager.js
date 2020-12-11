@@ -1,8 +1,10 @@
-export default class StoryManager 
+import Phaser from 'phaser'
+export default class StoryManager extends Phaser.Events.EventEmitter
 {
     
     constructor(scene, storyData)
 	{
+        super();
         this.storyData=storyData;
         this.scene=scene;
         this.gameVariables={};
@@ -230,9 +232,11 @@ export default class StoryManager
         let delimSplit=lineStr.split(this.directiveDelimiter);
         let autoNext=false;
         if(lineStr.startsWith(this.directiveEnum.location)){
+
             if(logging){console.log("set location :"+this.evaluateLocation(delimSplit[2]));}
             if(this.gameHasStarted){
                 this.currentLocation=delimSplit[2];
+                this.emit('showLocation',this.evaluateLocation(delimSplit[2]));
                 autoNext=true;
             } 
         }else if(lineStr.startsWith(this.directiveEnum.label)){
@@ -257,6 +261,7 @@ export default class StoryManager
                 
             }else{
                 if(logging)console.log(lineStr);
+                let choicesToEmit=[];
                 for (let i = 0; i < sepSplit.length/2; i++) {
                     if(logging){
                         console.log("choice "+(i+1)+": "+sepSplit[i*2]+"="+sepSplit[1+(i*2)]);
@@ -269,10 +274,14 @@ export default class StoryManager
                         }else{
                             autoNext=this.evaluateLine(sepSplit[1+(i*2)],chapterIndex,sequenceIndex,gameBranches,logging);
                         }
+                    }else{
+                        choicesToEmit.push(sepSplit[i*2]);
                     }
                 }
-                if(this.gameHasStarted)
-                this.makingChoice=true;
+                if(this.gameHasStarted){
+                    this.makingChoice=true;
+                    this.emit("showChoices",choicesToEmit);
+                }
             }
             
         }else if(lineStr.startsWith(this.directiveEnum.check)){
@@ -318,9 +327,23 @@ export default class StoryManager
             }else{
                 //console.log("no special start :"+lineStr);
                 let sepSplit=lineStr.split(this.separationTag);
+                let characterToEmit=null;
+                let moodIndex=-1;
+                let actionToEmit='say';
+                let dialogToEmit='';
+                let replaceCharacter=false;
+                let removeCharacters=false;
                 if(sepSplit.length>1){
                     if(sepSplit[1].includes(this.variableTag)){
                         sepSplit[1]=this.replaceVariables(sepSplit[1]);
+                    }
+                    characterToEmit=this.evaluateCharactercfName(sepSplit[0]);
+                    moodIndex=this.evaluateCharacterMood(sepSplit[0]);
+                    if(sepSplit[1].startsWith(this.thoughtTag)){
+                        actionToEmit='think';
+                        dialogToEmit=sepSplit[1].slice(1);
+                    }else{
+                        dialogToEmit=sepSplit[1];
                     }
                     if(logging){
                         if(sepSplit[1].startsWith(this.thoughtTag)){
@@ -333,16 +356,20 @@ export default class StoryManager
                     if(this.currentCharacter!==newCharacter){
                         //switch character
                         this.currentCharacter=newCharacter;
+                        replaceCharacter=true;
                     }
                 }else{
                     if(lineStr.includes(this.variableTag)){
                         lineStr=this.replaceVariables(lineStr);
                     }
                     this.currentCharacter=null;
+                    removeCharacters=true;
+                    dialogToEmit=lineStr;
                     if(logging){console.log("narrator says "+lineStr);}
                 }
                 //auto save here
                 if(this.gameHasStarted){
+                    this.emit("showDialog",characterToEmit,moodIndex,actionToEmit,dialogToEmit,removeCharacters,replaceCharacter);
                     this.saveProgress();
                 }
             }
@@ -371,11 +398,19 @@ export default class StoryManager
         return str;
     }
     evaluateLocation(exp){
-        return this.gameLocations[exp].name;
+        return this.gameLocations[exp].cfName;
     }
     evaluateCharacter(exp){
         let sepSplit=exp.split(this.variationTag);
         return this.gameCharacters[sepSplit[0]].name+" ("+this.gameCharacterExpressions[sepSplit[1]].name+")";
+    }
+    evaluateCharactercfName(exp){
+        let sepSplit=exp.split(this.variationTag);
+        return this.gameCharacters[sepSplit[0]].cfName;
+    }
+    evaluateCharacterMood(exp){
+        let sepSplit=exp.split(this.variationTag);
+        return this.gameCharacterExpressions[sepSplit[1]].index;
     }
     evaluateExpression(exp,logging){
         let sepSplit=exp.split(this.expSeparationTag);

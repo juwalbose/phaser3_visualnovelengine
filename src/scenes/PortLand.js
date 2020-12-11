@@ -1,6 +1,8 @@
 import Phaser from 'phaser'
 import DialogText from '../components/DialogText';
 import Choice from '../components/Choice';
+import ViewManager from '../utils/ViewManager';
+import StoryManager from '../utils/StoryManager';
 
 export default class PortLand extends Phaser.Scene
 {
@@ -8,54 +10,56 @@ export default class PortLand extends Phaser.Scene
 	{
 		super('PortLand')
     }
-    init(data){
-      if(data!=undefined){
-          if(data.viewManager!=undefined){
-              this.viewManager=data.viewManager;
-          }
-          if(data.storyManager!=undefined){
-            this.storyManager=data.storyManager;
-        }
-      }
-    }
-    preload()
-    {
-      this.load.image('bg', 'src/assets/images/supermarket_bg.jpg');
-      this.load.image('bluebase', 'src/assets/images/bluebase.png');    
-      this.load.dragonbone(
-        "Sam",
-        "src/assets/Anims/Sam_tex.png",
-        "src/assets/Anims/Sam_tex.json",
-        "src/assets/Anims/Sam_ske.json"
-      );
-    }
-
+    
     create()
     {
+      let jData=this.cache.json.get('story');
+      this.storyManager = new StoryManager(this, jData);
+      if(this.storyManager.parseLoadAndInitStory(false)){//enable disable logging parsing data
+          let jDataNew=this.cache.json.get('data');
+          this.viewManager = new ViewManager(jDataNew);
+          console.log("Story data validated!");
+      }else{
+        console.log("Story data validation failed!");
+        return;
+      }
+      
+      
       this.currentOrientation="landscape";
+      this.viewManager.characterOnScene=false;
+      this.viewManager.characterOnLeft=false;
+
+      this.onSceneCharacters={};
 
       let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog"};
+    
+      this.bg=this.add.sprite(0,0,this.storyManager.gameLocations[Object.keys(this.storyManager.gameLocations)[0]].cfName);
+      this.viewManager.addToDisplayList(this.bg,itemTypeEnum.background);
       
-      this.viewManager.addToDisplayList(this.add.image(0,0,'bg'),itemTypeEnum.background);
-      
-      this.sam = this.add.armature("Sam", "Sam");
-      this.sam.animation.play();
-      this.viewManager.addToDisplayList(this.sam,itemTypeEnum.character);
+      for (var key of Object.keys(this.storyManager.gameCharacters)) {
+        let armature=this.add.armature(this.storyManager.gameCharacters[key].cfName,this.storyManager.gameCharacters[key].cfName);
+        armature.animation.play();
+        this.viewManager.addToDisplayList(armature,itemTypeEnum.character);
+        this.onSceneCharacters[this.storyManager.gameCharacters[key].cfName]=armature;
+      }
 
+      
       this.dialog = new DialogText(this,0,0,500,'bluebase','46');
       this.add.existing(this.dialog);
       this.viewManager.addToDisplayList(this.dialog,itemTypeEnum.dialog);
+      this.dialog.visible=false;
 
-      let numChoices=5;
-      for (let index = 0; index < numChoices; index++) {
-        let choice = new Choice(this,0,0,500,'bluebase','40');
-        this.add.existing(choice);
-        choice.setText(`[shadow][stroke=blue]Some random text with choice no.[/stroke][/shadow]`+index);
-        this.viewManager.addToDisplayList(choice,itemTypeEnum.choice);
+      this.maxChoices=6;
+      for (let index = 0; index < this.maxChoices; index++) {
+        this["choice"+index] = new Choice(this,0,0,500,'bluebase','40',index);
+        this.add.existing(this["choice"+index]);
+        this["choice"+index].setText(`[shadow][stroke=blue]Some random text with choice no.[/stroke][/shadow]`+index);
+        this.viewManager.addToDisplayList(this["choice"+index],itemTypeEnum.choice);
+        this["choice"+index].visible=false;
       }
 
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/zone/
-      var zone = this.add.zone(300, 400, 200, 200).setInteractive({ useHandCursor: true}).on('pointerdown',this.zoneCallback);
+      //var zone = this.add.zone(300, 400, 200, 200).setInteractive({ useHandCursor: true}).on('pointerdown',this.zoneCallback);
       
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/quest/ //incremental choice progression
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/fsm/ //finite shate machine
@@ -67,37 +71,92 @@ export default class PortLand extends Phaser.Scene
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-dialog/ //ui dialog box with choice buttons
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/ui-sizer/ //sizer for layout
 
-      this.input.on('pointerdown', this.handleMousePress, this);
       this.scale.on('orientationchange', this.orientationResponder,this);
+
+      this.input.setTopOnly(true);
+      this.input.on('gameobjectover',this.enterButtonHoverState,this);
+      this.input.on('gameobjectout',this.enterButtonRestState,this);
+      this.input.on('gameobjectdown',this.enterButtonActiveState,this);
+      this.input.on('gameobjectup',this.handleChoicePress,this);
+
+      //this.input.on('pointerup', this.handleMousePress,this);
+      this.bg.setInteractive();
       
       this.resize();
 
+      this.storyManager.on('showLocation', this.handleShowLocation,this);
+      this.storyManager.on('showChoices', this.handleShowChoices,this);
+      this.storyManager.on('showDialog', this.handleShowDialog,this);
       this.storyManager.nextStep();
 
-      //let timedEvent = this.time.delayedCall(1000, this.clearChoices, [], this);
-      this.time.delayedCall(3000, this.sayDialog(), [], this);
+      //this.time.delayedCall(3000, this.sayDialog(), [], this);
     }
+    handleShowLocation(loc){
+      this.bg.setTexture(loc);
+    }
+    handleShowChoices(choices){
+      console.log("h choices",choices);
+      for (let index = 0; index < choices.length; index++) {
+        this["choice"+index].setText(choices[index]);
+        this["choice"+index].visible=true;
+      }
+    }
+    handleShowDialog(character,moodIndex,action,dialog,removeCharacters,replaceCharacter){
+      console.log("h dialog",character,moodIndex,action,dialog,removeCharacters,replaceCharacter);
+      if(character!==null){
+        this.viewManager.characterOnScene=true;
+      }else{
+        this.viewManager.characterOnScene=false;
+      }
+      this.dialog.say(dialog);
+      this.dialog.visible=true;
+
+      if(Object.keys(this.onSceneCharacters)[0]===character){
+        this.viewManager.characterOnLeft=true;
+      }else{
+        this.viewManager.characterOnLeft=false;
+      }
+      this.viewManager.layout(this.currentOrientation);
+    }
+
     sayDialog(){
       let s1 = `[shadow][stroke=blue]Some random text which I am writing here to test this dialog box. Does this work?
 What should I do[color=blue]??[/color][i][b][color=red]FIGHT[/color]!![/b][/i]H[size=45]M[size=40]M[size=35]M[/size]FLIGHT[color=white] DO NOTHING SOMETHING[/stroke][/shadow]`;
       this.dialog.say(s1);
     }
-    clearChoices(arg){
-      this.viewManager.clearChoiceList();
-    }
 
-    handleMousePress (pointer) {
-      if(this.storyManager.makingChoice){
-        let choice=Phaser.Math.Between(0, 1);
-        this.storyManager.makeChoice(choice);
+    
+    handleChoicePress (pointer,gameObject) {
+      if(gameObject===this.bg){
+        console.log("mouse");
+        if(!this.storyManager.makingChoice){
+          this.storyManager.nextStep();
+        }
       }else{
-        this.storyManager.nextStep();
+        console.log("tapped "+gameObject.parentContainer.choiceId);
+        if(this.storyManager.makingChoice){
+          let choice=gameObject.parentContainer.choiceId;
+          this.storyManager.makeChoice(choice);
+
+          for (let index = 0; index < this.maxChoices; index++) {
+            this["choice"+index].visible=false;
+          }
+        }
       }
-    }
-    zoneCallback(){
-      console.log('zone');
+      
     }
    
+    enterButtonHoverState(pointer,gameObject){
+      //gameObject.hover();
+    }
+    enterButtonRestState(pointer,gameObject){
+      if(gameObject!==this.bg)
+      gameObject.parentContainer.rest();
+    }
+    enterButtonActiveState(pointer,gameObject){
+      if(gameObject!==this.bg)
+      gameObject.parentContainer.press();
+    }
 
     resize(){
       if(window.innerWidth>window.innerHeight){

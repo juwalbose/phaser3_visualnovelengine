@@ -12,14 +12,40 @@ export default class Preloader extends Phaser.Scene
 
     preload() {
         this.load.json('data', 'src/assets/data/data.json');
-        //this.load.once('filecomplete', this.jsonComplete, this);
         this.load.once('filecomplete', this.dataComplete, this);
     }
-    /*
+
+    dataComplete() {
+        console.log("Data json loaded!");
+        let storyFile="story.json";
+        let jsonData=this.cache.json.get('data');
+        if(jsonData===null){
+            console.log("Game Data JSON file missing!");
+            return false;
+        }else{
+            if(jsonData.story===undefined){
+                console.log("Story JSON file missing!");
+            }else{
+                if(jsonData.story.file_name===undefined){
+                    console.log("Story JSON file missing!");
+                }else{
+                    if(jsonData.story.default_language===undefined){
+                        storyFile=jsonData.story.file_name+"_en.json";
+                    }else{
+                        storyFile=jsonData.story.file_name+"_"+jsonData.story.default_language+".json";  
+                    }
+                    this.load.json('story', 'src/assets/data/'+storyFile);
+                    this.load.once('filecomplete', this.jsonComplete, this);
+                    return true;
+                }  
+            }
+        }
+        console.log("Cannot proceed without story json file!");
+    }
+    
     jsonComplete(){
-        console.log("JSON Loaded!");
-        this.jpgsToLoad=[];
-        this.pngsToLoad=[];
+        console.log("Story JSON Loaded!");
+
         this.width = this.cameras.main.width;
         this.height = this.cameras.main.height;
 
@@ -41,53 +67,37 @@ export default class Preloader extends Phaser.Scene
             this.loadSeparately();
 
             this.load.on('progress', this.updateBar, {loaderGraphics:this.loaderGraphics,loadingText:this.loadingText,width:this.width,height:this.height});
-            this.load.on('complete', this.complete, {scene:this.scene});
+            this.load.on('complete', this.storyComplete, {scene:this.scene});
+
+     
         
     }
 
     loadSeparately(){
-        console.log("Files loading!");
-        if(this.parseAndValidateJSON()){
-
-            for (let index = 0; index < this.jpgsToLoad.length; index++) {
-                const element = this.jpgsToLoad[index];
-                this.load.image(element, 'images/'+element+'.jpg');
-                //console.log("loading "+'images/'+element+'.jpg');
-            }
-            for (let index = 0; index < this.pngsToLoad.length; index++) {
-                const element = this.pngsToLoad[index];
-                this.load.image(element, 'images/'+element+'.png');
-                //console.log("loading "+'images/'+element+'.png');
-            }
-            this.load.image('logo', 'images/VvLogoPng.png');
-            this.load.image('greenlogo', 'images/GreenCityLogoPng.png');
-            this.load.image('rocketlogo', 'images/RocketLogoPng.png');
-            
-            this.load.image('dialog', 'images/speechbubble.png');
-            this.load.image('choice', 'images/ChoiceBox.jpg');
-            this.load.image('tick', 'images/tickIcon.png');
-            this.load.image('next', 'images/nextIcon.png');
-            this.load.image('coin', 'images/coinIcon.png');
-            this.load.image('earth', 'images/earthIcon.png');
-            this.load.image('human', 'images/humanIcon.png');
-            this.load.image('n95', 'images/n95Icon.png');
-            this.load.image('o2', 'images/o2Icon.png');
-            this.load.image('skip', 'images/skipIcon.png');
-            this.load.image('surgical', 'images/surgicalIcon.png');
-            this.load.image('treasure', 'images/treasureIcon.png');
-            this.load.image('treasureClosed', 'images/treasureClosed.png');
-            this.load.image('treasureOpen', 'images/treasureOpen.png');
-
-            this.load.image('bg', 'images/menubg.jpg');
-            this.load.image('menu1', 'images/menu1.png');
-            this.load.image('menu2', 'images/menu2.png');
-            this.load.image('title', 'images/title.png');
-            
-            this.load.audio('positive', 'audio/positive.mp3');
-            this.load.audio('negative', 'audio/negative.mp3');
-
-        }else{
-            this.loadingText.text="Invalid JSON structure! Aborting.";
+        console.log("Assets loading!");
+        let jsonDataNew=this.cache.json.get('data');
+        if(jsonDataNew===null){
+            console.log("Data JSON corrupt!");
+            return false;
+        }
+        this.load.image(jsonDataNew.ui_base.name, jsonDataNew.ui_base.image);
+        let jsonData=this.cache.json.get('story');
+        if(jsonData===null){
+            console.log("Story JSON corrupt!");
+            return false;
+        }
+        for (let innerIndex = 0; innerIndex < jsonData.locations.length; innerIndex++) {
+            const loc = jsonData.locations[innerIndex];
+            this.load.image(loc.cfName, loc.image);
+        }
+        for (let innerIndex = 0; innerIndex < jsonData.characters.length; innerIndex++) {
+            const character = jsonData.characters[innerIndex];
+            this.load.dragonbone(
+                character.cfName,
+                character.texture,
+                character.textureData,
+                character.skeletonData
+            );
         }
     }
 
@@ -101,205 +111,9 @@ export default class Preloader extends Phaser.Scene
         this.loadingText.setText("Loading: " + percentage.toFixed(2) + "%");
         //console.log("P:" + percentage);
     }
-    parseAndValidateJSON(){
-        console.log("Trying to parse game data...");
-        var jsonData=this.cache.json.get('data');
-        if(jsonData===null){
-            console.log("Game Data JSON file missing!");
-            return false;
-        }else{
-            if(jsonData.selection.length<2){
-                console.log("Characters not defined for selection!");
-                return false;
-            }else{
-                for (let innerIndex = 1; innerIndex <= jsonData.selection.length; innerIndex++) {
-                    const chara = jsonData.selection[innerIndex-1];
-                    //console.log("Adding "+chara);
-                    if(chara!=='SelectedChar' && this.pngsToLoad.indexOf(chara)===-1){
-                        this.pngsToLoad.push(chara);
-                    }
-                }
-            }
-            let levelData=[];
-            let levelInd=1;
-            while (jsonData["level"+levelInd]!==undefined) {
-                levelData.push(jsonData["level"+levelInd]);
-                levelInd++;
-            }
-            if(levelData.length==0){
-                console.log("Levels are not defined in JSON file!");
-                return false;
-            }else{
-                console.log("Found "+levelData.length+" levels.");
-                for (let index = 0; index < levelData.length; index++) {
-                    const level = levelData[index];
-                    if(level.location===undefined){
-                        console.log("Level "+(index+1)+" location is not defined!");
-                        return false;
-                    }else{
-                        //console.log("Adding "+level.location);
-                        if(this.jpgsToLoad.indexOf(level.location)===-1){
-                            this.jpgsToLoad.push(level.location);
-                        }
-                    }
-                    if(level.characters===undefined){
-                        console.log("Level "+(index+1)+" characters are not defined!");
-                        return false;
-                    }else{
-                        if(level.characters.length<2){
-                            console.log("Level "+(index+1)+" needs atleast 2 characters!");
-                            return false;
-                        }else if(level.characters.length>2){
-                            console.log("Level "+(index+1)+" has more than 2 characters!");
-                            return false;
-                        }else{
-                            for (let innerIndex = 1; innerIndex <= level.characters.length; innerIndex++) {
-                                const chara = level.characters[innerIndex-1];
-                                //console.log("Adding "+chara);
-                                if(chara!=='SelectedChar' && this.pngsToLoad.indexOf(chara)===-1){
-                                    this.pngsToLoad.push(chara);
-                                }
-                            }
-                        }
-                    }
-                    if(level.reward===undefined){
-                        console.log("Level "+(index+1)+" rewards are not defined!");
-                    }else{
-                        if(level.reward.length>3){
-                            console.log("Level "+(index+1)+" has "+level.reward.length+" rewards defined, we need only 3!");
-                        }else{
-                            console.log("Level "+(index+1)+" has "+level.reward.length+" rewards defined!");
-                        }
-                        
-                    }
-                    if(level.sequence===undefined){
-                        console.log("Level "+(index+1)+" dialog/quiz sequence is not defined!");
-                        return false;
-                    }else{
-                        let dialogCount=0;
-                        let quizCount=0;
-                        console.log("Level "+(index+1)+" has "+Object.keys(level.sequence).length+" sequences defined!");
-                        for (let innerIndex = 1; innerIndex <= Object.keys(level.sequence).length; innerIndex++) {
-                            const sequenceElement = level.sequence[innerIndex.toString()];
-                            switch (sequenceElement.type) {
-                                case "dialog":
-                                    dialogCount++;
-                                    if(sequenceElement.character===undefined){
-                                        console.log("Level "+(index+1)+" character not defined for dialog sequence :"+innerIndex);
-                                        return false;
-                                    }
-                                    if(sequenceElement.dialog===undefined){
-                                        console.log("Level "+(index+1)+" dialog not defined for dialog sequence :"+innerIndex);
-                                    }
-                                    break;
-                                case "quiz":
-                                    quizCount++;
-                                    if(sequenceElement.question===undefined){
-                                        console.log("Level "+(index+1)+" question not defined for quiz sequence :"+innerIndex);
-                                        return false;
-                                    }
-                                    
-                                    if(sequenceElement.choices===undefined){
-                                        console.log("Level "+(index+1)+" choices not defined for quiz sequence :"+innerIndex);
-                                        return false;
-                                    }else{
-                                        if(sequenceElement.choices.length>3){
-                                            console.log("Level "+(index+1)+" more than 3 choices for quiz sequence :"+innerIndex);
-                                            return false;
-                                        }else{
-                                            for (let innerInerIndex = 0; innerInerIndex < sequenceElement.choices.length; innerInerIndex++) {
-                                                const choiceElement = sequenceElement.choices[innerInerIndex];
-                                                if(choiceElement.choice===undefined){
-                                                    console.log("Level "+(index+1)+" choice text not defined for choice :"+innerInerIndex);
-                                                    return false;
-                                                }
-                                                if(choiceElement.points===undefined){
-                                                    console.log("Level "+(index+1)+" choice points not defined for choice :"+innerInerIndex);
-                                                }
-                                                if(choiceElement.impact===undefined){
-                                                    console.log("Level "+(index+1)+" choice impact not defined for choice :"+innerInerIndex);
-                                                }
-                                                if(choiceElement.price===undefined){
-                                                    console.log("Level "+(index+1)+" choice price not defined for choice :"+innerInerIndex);
-                                                }
-                                                if(choiceElement.description===undefined){
-                                                    console.log("Level "+(index+1)+" choice description not defined for choice :"+innerInerIndex);
-                                                }
-                                                if(choiceElement.image===undefined){
-                                                    console.log("Level "+(index+1)+" choice image not defined for choice :"+innerInerIndex);
-                                                }else{
-                                                    if(this.jpgsToLoad.indexOf(choiceElement.image)===-1){
-                                                        this.jpgsToLoad.push(choiceElement.image);
-                                                    }
-                                                    
-                                                }
-                                            }
-                                        }
-                                    }
-                                    break;
-                            
-                                default:
-                                    break;
-                            }
-                        }
-                        console.log("Level "+(index+1)+" has "+dialogCount+" dialogs & "+quizCount+ " questions.");
-                    }
-                }
-            }
-        }
-        return true;
-    }
-*/
 
-	dataComplete() {
-        console.log("Data json loaded!");
-        let storyFile="story.json";
-        let jsonData=this.cache.json.get('data');
-        if(jsonData===null){
-            console.log("Game Data JSON file missing!");
-            return false;
-        }else{
-            if(jsonData.story===undefined){
-                console.log("Story JSON file missing!");
-            }else{
-                if(jsonData.story.file_name===undefined){
-                    console.log("Story JSON file missing!");
-                }else{
-                    if(jsonData.story.default_language===undefined){
-                        storyFile=jsonData.story.file_name+"_en.json";
-                    }else{
-                        storyFile=jsonData.story.file_name+"_"+jsonData.story.default_language+".json";  
-                    }
-                    this.load.json('story', 'src/assets/data/'+storyFile);
-                    this.load.once('filecomplete', this.storyComplete, this);
-                    return true;
-                }  
-            }
-        }
-        console.log("Cannot proceed without story json file!");
-    }
     storyComplete(){
-        console.log("Story json loaded!");
-        let jsonData=this.cache.json.get('story');
-        if(jsonData===null){
-            console.log("Story JSON corrupt!");
-            return false;
-        }
-        let sm = new StoryManager(this, jsonData);
-
-        if(sm.parseLoadAndInitStory(false)){//enable disable logging parsing data
-            let jsonDataNew=this.cache.json.get('data');
-            if(jsonDataNew===null){
-                console.log("Data JSON corrupt!");
-                return false;
-            }
-            
-            //let vm = new ViewManager(jsonDataNew.designSize.width,jsonDataNew.designSize.height,50,50);//uncomment to work with Test.js
-            let vm = new ViewManager(jsonDataNew);
-            console.log("Story data validated!");
-            this.scene.start("PortLand",{ viewManager:vm,storyManager:sm });
-        }else{
-            console.log("Cannot proceed with corrupt story file!");
-        }
+        console.log("Assets loaded!");
+        this.scene.start("PortLand");
     }
 }
