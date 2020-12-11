@@ -5,6 +5,7 @@ A very simple Visual Novel Engine using DragonBones with Phaser 3 while using We
 
 ## FEATURES
 
+| sl | Feature |
 |---------|-------------|
 |1| Single json file drives the entire novel |
 |2| Syntax within the json to drive necessary story actions |
