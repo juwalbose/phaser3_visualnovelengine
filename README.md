@@ -3,6 +3,9 @@ A very simple Visual Novel Engine using DragonBones with Phaser 3 while using We
 
 [SEE LIVE DEMO HERE](https://juwalbose.github.io/phaser3_visualnovelengine/)
 
+# EDITOR
+A desktop app to create the story json which drives this engine is being worked on. Can find the progress [here](https://github.com/juwalbose/Phaser3_Electron_StoryWriter)
+
 ## FEATURES
 
 | sl | Feature |
