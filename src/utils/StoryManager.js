@@ -11,13 +11,8 @@ export default class StoryManager extends Phaser.Events.EventEmitter
         this.gameCharacters={};
         this.gameCharacterExpressions={};
         this.gameLocations={};
-
-        /*this.directiveEnum = {location:"|LOCATION|",choice:"|CHOICE|", branch:"|GOTO|", check:"|IF|", label:"|LABEL"};
-        this.directiveDelimiter = "|";
-        this.variableTag="$";
-        this.variationTag="_";
-        this.separationTag=":";
-        this.expSeparationTag="*";*/
+        this.inventory=[];
+        this.inventoryItems={};
 
         this.storyName=this.storyData.storyName.name;
         this.cfStoryName=this.storyData.storyName.aka;//computer friendly name
@@ -41,7 +36,7 @@ export default class StoryManager extends Phaser.Events.EventEmitter
         this.needsToLoadLocation=false;
     }
     parseLoadAndInitStory(logging=false){
-        //localStorage.clear();//comment off to enable loading from save else starts fresh
+        localStorage.clear();//comment off to enable loading from save else starts fresh
         //return;
 
         let parseResult= this.parseAndValidateStory(logging);
@@ -55,6 +50,7 @@ export default class StoryManager extends Phaser.Events.EventEmitter
             this.currentChapter=file.currentChapter;
             this.currentSequence=file.currentSequence-1;
             this.currentLocation=file.currentLocation;
+            this.inventory=file.inventory;
             this.needsToLoadLocation=true;
         }else{
             console.log("No save data for "+this.storyName);
@@ -68,6 +64,7 @@ export default class StoryManager extends Phaser.Events.EventEmitter
         file.currentChapter=this.currentChapter;
         file.currentSequence=this.currentSequence;
         file.currentLocation=this.currentLocation;
+        file.inventory=this.inventory;
 
         var encResult = this.scene.plugins.get('rexXOR').Encrypt(JSON.stringify(file), "setnewpassword");
         //console.log(encResult);
@@ -169,6 +166,11 @@ export default class StoryManager extends Phaser.Events.EventEmitter
             this.gameLocations[loc.aka]=loc;
         }
 
+        for (let innerIndex = 0; innerIndex < this.storyData.inventoryItems.length; innerIndex++) {
+            const inv = this.storyData.inventoryItems[innerIndex];
+            this.inventoryItems[inv.aka]=inv;
+        }
+
         for (let innerIndex = 0; innerIndex < this.storyData.characters.length; innerIndex++) {
             const character = this.storyData.characters[innerIndex];
             this.gameCharacters[character.aka]=character;
@@ -238,6 +240,11 @@ export default class StoryManager extends Phaser.Events.EventEmitter
                 this.currentLocation=delimSplit[2];
                 this.emit('showLocation',this.evaluateLocation(delimSplit[2]));
                 autoNext=true;
+            } 
+        }else if(lineStr.startsWith(this.directiveEnum.item)){
+            if(logging){console.log("show item :"+this.evaluateItem(delimSplit[2]));}
+            if(this.gameHasStarted){
+                this.emit('showItem',this.evaluateItem(delimSplit[2]));
             } 
         }else if(lineStr.startsWith(this.directiveEnum.label)){
             if(logging){console.log("set label :"+delimSplit[1]);}
@@ -399,6 +406,9 @@ export default class StoryManager extends Phaser.Events.EventEmitter
     }
     evaluateLocation(exp){
         return this.gameLocations[exp].cfName;
+    }
+    evaluateItem(exp){
+        return this.inventoryItems[exp].cfName;
     }
     evaluateCharacter(exp){
         let sepSplit=exp.split(this.variationTag);

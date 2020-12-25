@@ -16,7 +16,7 @@ export default class Novel extends Phaser.Scene
     {
       let jData=this.cache.json.get('story');
       this.storyManager = new StoryManager(this, jData);
-      if(this.storyManager.parseLoadAndInitStory(false)){//enable disable logging parsing data
+      if(this.storyManager.parseLoadAndInitStory(true)){//enable disable logging parsing data
           let jDataNew=this.cache.json.get('data');
           this.viewManager = new ViewManager(this,jDataNew);
           console.log("Story data validated!");

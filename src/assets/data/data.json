@@ -30,6 +30,12 @@
         "origin":{"x":0.5,"y":0.5},
         "position":{"x":690,"y":500},
         "size":{"width":800,"height":80}
+      },
+      "item":{
+        "slide":690,
+        "origin":{"x":0.5,"y":0.5},
+        "position":{"x":690,"y":700},
+        "size":{"width":800,"height":400}
       }
     },
     "portrait":{
@@ -61,6 +67,12 @@
         "origin":{"x":0.5,"y":0.5},
         "position":{"x":290,"y":640},
         "size":{"width":500,"height":160}
+      },
+      "item":{
+        "slide":290,
+        "origin":{"x":0.5,"y":0.5},
+        "position":{"x":290,"y":765},
+        "size":{"width":500,"height":250}
       }
     }
   },
