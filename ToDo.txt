@@ -1,6 +1,8 @@
 Features
 
 Documentation TODO
+Inventory (Collectible list of items with images, Collected persistant array, Inventory Check logic) DONE
+Item popup in dialog to collect. DONE
 Non branching story (first priority)
 Choice with/wo character DONE
 Parse thoughts DONE

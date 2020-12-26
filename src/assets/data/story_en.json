@@ -21,26 +21,33 @@
         "charm":0,
         "name":"James"
     },
+    "inventoryItems": [
+        {"name":"Lucy's Bag","cfName":"lucybag","aka":"lb","image":"src/assets/images/lucy_bag.jpg"},
+        {"name":"Lucy's Phone","cfName":"lucyphone","aka":"lp","image":"src/assets/images/lucy_phone.jpg"}
+    ],
 
-    "directiveEnum" : {"location":"|LOCATION|","choice":"|CHOICE|", "branch":"|GOTO|", "check":"|IF|", "label":"|LABEL"},
+    "directiveEnum" : {"location":"|LOCATION|","choice":"|CHOICE|", "branch":"|GOTO|", "check":"|IF|", "label":"|LABEL","item":"|ITEM|"},
     "directiveDelimiter":"|",
     "variableTag":"$",
     "variationTag":"_",
     "separationTag":":",
     "thoughtTag":"!",
     "expSeparationTag":"*",
+    "inventoryTag":"INV",
 
     "storyFlow":[
         {"Prologue":[
             "|LOCATION|sm",
             "Welcome to this demo for a simple Visual Novel tool created using Phaser 3 for the web!",
             "If you are on mobile, you can try switching between landscape and portrait!",
-            "Open the dev console to see some behind the scenes logs!",
+            "On PC, open the dev console to see some behind the scenes logs!",
             "You just saw a narrator dialog. Now let us see some narrator choices...",
             "|CHOICE|Yeah lets do this!:|LABEL1|:Ok whatever:|LABEL2|",
             "|LABEL1|Appreciate the excitement.",
             "|LABEL2|So that was simple choice which jump to labels. Let us start a story...",
             "The supermarket is crowded today. Holiday season is on and everyone is busy buying their presents.",
+            "l_n:Hi, I am Lucy. Let me get my phone.",
+            "|ITEM|lp",
             "l_s:!I hate shopping alone. If only Lannie had not ditched me at the last minute...",
             "Lucy sees a familiar face among the bustling crowd. Its Sam!",
             "l_n:What should I do?",
@@ -63,14 +70,17 @@
             "l_n:You got me. I would love you to meet Lannie.",
             "We are going to check a variable to see whether we should skip next section or not.",
             "|IF|$skipVariableCheck*==*true:|LABEL6|",
-            "We had set story variable skipVariableCheck to $skipVariableCheck hence we didnt skip this section.",
-             "Let us see variable updation. value of obtainedKey is $obtainedKey and charm is $charm",
+            "We had set story variable skipVariableCheck to ' $skipVariableCheck ' hence we didnt skip this section.",
+            "|LABEL6|Let us check if Lucy has her phone in inventory (which she has as she had collected it earlier)",
+            "|IF|$INV*lp:|LABEL7|",
+            "|LABEL7|Success! Let us see variable updation. value of obtainedKey is $obtainedKey and charm is $charm",
             "|CHOICE|Obtain Key:|$obtainedKey*=*true|:Increase Charm:|$charm*+*1|",
             "New value of obtainedKey is $obtainedKey and charm is $charm",
-            "See how the variable in text reflects its value like $name here",
+            "See how the variable in text reflects its value like ' $name ' here",
             "|$charm*+*1|",
-            "Just incremented charm to $charm So easy. Well let us get back to our characters...",
-            "|LABEL6|They got into Sam's car and made their way to Lucy's apartment.",
+            "Just incremented charm to ' $charm ' internally. So easy! Time to collect lucy's bag",
+            "|ITEM|lb",
+            "They got into Sam's car and made their way to Lucy's apartment.",
             "Let us switch location"
         ]},
         {"Chapter 1":[
@@ -82,7 +92,8 @@
             "l_n:!This is awkward",
             "Everything is driven by simple lines of text in a json file.",
             "All you need to create a new story is the necessary art & some lines of well formatted text!",
-            "As we are auto saving the progress, if you want to retry please clear cache and reload! ",
+            "As can auto saving the progress using local storage so that we can pick up where we left off!",
+            "Auto saving is disabled for this build so that it replays once reloaded.",
             "Have fun!"
         ]},
         {"Chapter 2":[

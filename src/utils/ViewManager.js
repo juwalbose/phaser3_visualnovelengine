@@ -18,6 +18,7 @@ export default class ViewManager
         this.characterObjects=[];
         this.dialogObject;
         this.nameTagObject;
+        this.itemBoxObject;
         this.dialogWickObjects=[];
         this.choiceObjects=[];
     }
@@ -46,6 +47,8 @@ export default class ViewManager
                 element.item.setScale(newScale); 
             //}
         }
+
+        this.itemBoxObject.item.assignNewSize(this.layoutData[orientation].item.size.width, this.layoutData[orientation].item.size.height);
 
         this.dialogObject.item.assignNewSize(this.layoutData[orientation].dialog.size.width, this.layoutData[orientation].dialog.size.height);
 
@@ -135,7 +138,7 @@ export default class ViewManager
         }
         
         //for (let index = 0; index < this.dialogObjects.length; index++) {
-            const element = this.dialogObject;//s[index];
+            let element = this.dialogObject;//s[index];
             if(this.characterOnScene){
                 if(orientation==="portrait"){
                     element.item.x=this.layoutData[orientation].background.position.x;
@@ -180,9 +183,21 @@ export default class ViewManager
             }
             element.item.y=this.layoutData[orientation].choice.position.y+(index*this.layoutData[orientation].choice.size.height*1.1);
         }
+
+        element = this.itemBoxObject;
+            if(this.characterOnScene){
+                if(this.characterOnLeft){
+                    element.item.x=newDesignSize.width-this.layoutData[orientation].item.slide;
+                }else{
+                    element.item.x=this.layoutData[orientation].item.slide;
+                }
+            }else{
+                element.item.x=this.layoutData[orientation].background.position.x;
+            }
+            element.item.y=this.layoutData[orientation].item.position.y;
     }
     addToDisplayList(item,itemType,height=0){
-        let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog",dialogWick:"dialogWick",nameTag:"nameTag"};
+        let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog",dialogWick:"dialogWick",nameTag:"nameTag",item:'item'};
         switch(itemType){
             case itemTypeEnum.background:
                 item.setOrigin(this.layoutData[this.currentOrientation].background.origin.x,this.layoutData[this.currentOrientation].background.origin.y);
@@ -198,6 +213,10 @@ export default class ViewManager
             break;
             case itemTypeEnum.nameTag:
                 this.nameTagObject=new LayoutItem(item,itemTypeEnum.nameTag);
+            break;
+            case itemTypeEnum.item:
+                //item.setOrigin(this.layoutData[this.currentOrientation].item.origin.x,this.layoutData[this.currentOrientation].item.origin.y);
+                this.itemBoxObject=new LayoutItem(item,itemTypeEnum.item);
             break;
             case itemTypeEnum.choice:
                 //item.setOrigin(this.layoutData[this.currentOrientation].choice.origin.x,this.layoutData[this.currentOrientation].choice.origin.y);

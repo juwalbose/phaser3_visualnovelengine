@@ -4,7 +4,7 @@ A very simple Visual Novel Engine using DragonBones with Phaser 3 while using We
 [SEE LIVE DEMO HERE](https://juwalbose.github.io/phaser3_visualnovelengine/)
 
 # EDITOR
-A desktop app to create the story json which drives this engine is being worked on. Can find the progress [here](https://github.com/juwalbose/Phaser3_Electron_StoryWriter)
+A desktop app to create the story json which drives this engine is being worked on.
 
 ## FEATURES
 
@@ -23,6 +23,7 @@ A desktop app to create the story json which drives this engine is being worked 
 |11| Auto save progress to local storage. Restart where left off |
 |12| XOR encrypted save data |
 |13| Face switching technique can be extended to dressing up the characters |
+|14| Simple inventory with item popup & ability to check for item |
 
 Note: This is a fork of the phaser3-project-template repository.
 ## Phaser 3 Webpack Project Template

@@ -90,6 +90,10 @@ export default class Preloader extends Phaser.Scene
             const loc = jsonData.locations[innerIndex];
             this.load.image(loc.cfName, loc.image);
         }
+        for (let innerIndex = 0; innerIndex < jsonData.inventoryItems.length; innerIndex++) {
+            const inv = jsonData.inventoryItems[innerIndex];
+            this.load.image(inv.cfName, inv.image);
+        }
         for (let innerIndex = 0; innerIndex < jsonData.characters.length; innerIndex++) {
             const character = jsonData.characters[innerIndex];
             this.load.dragonbone(
