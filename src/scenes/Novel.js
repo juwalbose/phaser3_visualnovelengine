@@ -4,6 +4,7 @@ import Choice from '../components/Choice';
 import ViewManager from '../utils/ViewManager';
 import StoryManager from '../utils/StoryManager';
 import NameTag from '../components/NameTag';
+import ItemBox from '../components/ItemBox';
 
 export default class Novel extends Phaser.Scene
 {
@@ -32,7 +33,7 @@ export default class Novel extends Phaser.Scene
 
       this.onSceneCharacters={};
 
-      let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog",dialogWick:"dialogWick",nameTag:"nameTag"};
+      let itemTypeEnum = {background:"background",character:"character",choice:"choice", dialog:"dialog",dialogWick:"dialogWick",nameTag:"nameTag",item:'item'};
     
       this.bg=this.add.sprite(0,0,this.storyManager.gameLocations[Object.keys(this.storyManager.gameLocations)[0]].cfName);
       this.viewManager.addToDisplayList(this.bg,itemTypeEnum.background);
@@ -71,6 +72,11 @@ export default class Novel extends Phaser.Scene
         this["choice"+index].visible=false;
       }
 
+      this.itemBox=new ItemBox(this,0,0,500,'dialogbase');
+      this.add.existing(this.itemBox);
+      this.viewManager.addToDisplayList(this.itemBox,itemTypeEnum.item);
+      this.itemBox.visible=false;
+
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/quest/ //incremental choice progression
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/fsm/ //finite shate machine
       //https://rexrainbow.github.io/phaser3-rex-notes/docs/site/flash/ flash effect
@@ -94,11 +100,16 @@ export default class Novel extends Phaser.Scene
       this.storyManager.on('showLocation', this.handleShowLocation,this);
       this.storyManager.on('showChoices', this.handleShowChoices,this);
       this.storyManager.on('showDialog', this.handleShowDialog,this);
+      this.storyManager.on('showItem', this.handleShowItem,this);
       this.storyManager.nextStep();
 
     }
     handleShowLocation(loc){
       this.bg.setTexture(loc);
+    }
+    handleShowItem(itm){
+      this.itemBox.setItem(itm);
+      this.itemBox.visible=true;
     }
     handleShowChoices(choices){
       for (let index = 0; index < choices.length; index++) {
@@ -158,6 +169,7 @@ What should I do[color=blue]??[/color][i][b][color=red]FIGHT[/color]!![/b][/i]H[
       if(gameObject===this.bg){
         //console.log("mouse");
         if(!this.storyManager.makingChoice){
+          this.itemBox.visible=false;
           this.storyManager.nextStep();
         }
       }else{

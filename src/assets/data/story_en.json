@@ -33,6 +33,7 @@
     "separationTag":":",
     "thoughtTag":"!",
     "expSeparationTag":"*",
+    "inventoryTag":"INV",
 
     "storyFlow":[
         {"Prologue":[
@@ -69,15 +70,15 @@
             "l_n:You got me. I would love you to meet Lannie.",
             "We are going to check a variable to see whether we should skip next section or not.",
             "|IF|$skipVariableCheck*==*true:|LABEL6|",
-            "We had set story variable skipVariableCheck to '$skipVariableCheck' hence we didnt skip this section.",
+            "We had set story variable skipVariableCheck to ' $skipVariableCheck ' hence we didnt skip this section.",
             "|LABEL6|Let us check if Lucy has her phone in inventory (which she has as she had collected it earlier)",
-            "|IF|$inventory*lp:|LABEL7|",
+            "|IF|$INV*lp:|LABEL7|",
             "|LABEL7|Success! Let us see variable updation. value of obtainedKey is $obtainedKey and charm is $charm",
             "|CHOICE|Obtain Key:|$obtainedKey*=*true|:Increase Charm:|$charm*+*1|",
             "New value of obtainedKey is $obtainedKey and charm is $charm",
-            "See how the variable in text reflects its value like $name here",
+            "See how the variable in text reflects its value like ' $name ' here",
             "|$charm*+*1|",
-            "Just incremented charm to '$charm' internally. So easy! Time to collect lucy's bag",
+            "Just incremented charm to ' $charm ' internally. So easy! Time to collect lucy's bag",
             "|ITEM|lb",
             "They got into Sam's car and made their way to Lucy's apartment.",
             "Let us switch location"
@@ -91,7 +92,8 @@
             "l_n:!This is awkward",
             "Everything is driven by simple lines of text in a json file.",
             "All you need to create a new story is the necessary art & some lines of well formatted text!",
-            "As we are auto saving the progress, if you want to retry please clear cache and reload! ",
+            "As can auto saving the progress using local storage so that we can pick up where we left off!",
+            "Auto saving is disabled for this build so that it replays once reloaded.",
             "Have fun!"
         ]},
         {"Chapter 2":[

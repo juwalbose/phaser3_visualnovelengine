@@ -35,7 +35,7 @@
         "slide":690,
         "origin":{"x":0.5,"y":0.5},
         "position":{"x":690,"y":700},
-        "size":{"width":800,"height":400}
+        "size":{"width":650,"height":650}
       }
     },
     "portrait":{
@@ -71,8 +71,8 @@
       "item":{
         "slide":290,
         "origin":{"x":0.5,"y":0.5},
-        "position":{"x":290,"y":765},
-        "size":{"width":500,"height":250}
+        "position":{"x":290,"y":850},
+        "size":{"width":500,"height":500}
       }
     }
   },

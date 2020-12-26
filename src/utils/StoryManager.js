@@ -24,6 +24,7 @@ export default class StoryManager extends Phaser.Events.EventEmitter
         this.separationTag=this.storyData.separationTag;
         this.thoughtTag=this.storyData.thoughtTag;
         this.expSeparationTag=this.storyData.expSeparationTag;
+        this.inventoryTag=this.storyData.inventoryTag;
 
         this.storyFlow=this.storyData.storyFlow;
         this.currentChapter=0;
@@ -234,7 +235,6 @@ export default class StoryManager extends Phaser.Events.EventEmitter
         let delimSplit=lineStr.split(this.directiveDelimiter);
         let autoNext=false;
         if(lineStr.startsWith(this.directiveEnum.location)){
-
             if(logging){console.log("set location :"+this.evaluateLocation(delimSplit[2]));}
             if(this.gameHasStarted){
                 this.currentLocation=delimSplit[2];
@@ -244,6 +244,7 @@ export default class StoryManager extends Phaser.Events.EventEmitter
         }else if(lineStr.startsWith(this.directiveEnum.item)){
             if(logging){console.log("show item :"+this.evaluateItem(delimSplit[2]));}
             if(this.gameHasStarted){
+                this.inventory.push(this.evaluateItem(delimSplit[2]));
                 this.emit('showItem',this.evaluateItem(delimSplit[2]));
             } 
         }else if(lineStr.startsWith(this.directiveEnum.label)){
@@ -291,7 +292,7 @@ export default class StoryManager extends Phaser.Events.EventEmitter
                 }
             }
             
-        }else if(lineStr.startsWith(this.directiveEnum.check)){
+        }else if(lineStr.startsWith(this.directiveEnum.check)){//TODO add inventory check
             let trimStr=lineStr.slice(this.directiveEnum.check.length);
             let sepSplit=trimStr.split(this.separationTag);
             if(logging){console.log("evaluate "+sepSplit[0]+" : "+sepSplit[1]);}
@@ -424,6 +425,14 @@ export default class StoryManager extends Phaser.Events.EventEmitter
     }
     evaluateExpression(exp,logging){
         let sepSplit=exp.split(this.expSeparationTag);
+        if(sepSplit[0]===this.inventoryTag){//checking inventory presence
+            if(logging){console.log("checking inventory for "+this.evaluateItem(sepSplit[1]));}
+            if(this.inventory.includes(this.evaluateItem(sepSplit[1]))){
+                return true;
+            }else{
+                return false;
+            }
+        }
         let operatorStr=sepSplit[1];
         let lhsStr=sepSplit[0];
         let rhsStr=sepSplit[2];
